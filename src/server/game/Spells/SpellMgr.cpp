@@ -4161,8 +4161,17 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_INTERRUPT;
             count++;
             break;
+        case 44203: // Tranquility
+            spellInfo->MaxAffectedTargets = 5;
+            count++;
+            break;
         case 26573 : //Consecration
             spellInfo->EffectTriggerSpell[2] = 82366;
+            count++;
+            break;
+       case 86150: // Guardian of Ancient Kings
+            spellInfo->EffectTriggerSpell[0] = 86698;
+            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
             count++;
             break;
         case 64321: // Potent Pheromones
