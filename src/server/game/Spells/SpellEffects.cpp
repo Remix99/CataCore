@@ -1544,7 +1544,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
             if (m_spellInfo->SpellFamilyFlags[0] & SPELLFAMILYFLAG_WARRIOR_SLAM && m_spellInfo->SpellIconID == 559)
             {
                 int32 bp0 = damage;
-                m_caster->CastCustomSpell(unitTarget, 50783, &bp0, NULL, NULL, true, 0);
+                m_caster->CastCustomSpell(unitTarget, 50782, &bp0, NULL, NULL, true, 0);
                 return;
             }
             // Execute
