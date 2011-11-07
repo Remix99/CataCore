@@ -4381,7 +4381,7 @@ void AuraEffect::HandleAuraModRoot(AuraApplication const *aurApp, uint8 mode, bo
     {
         switch (GetSpellProto()->Id)
         {
-               case 69001: //Transform: Worgen. not used?
+            case 69001: //Transform: Worgen. not used?
             {
                 if(target->GetTypeId() == TYPEID_PLAYER)
                     target->ToPlayer()->setInWorgenForm();
