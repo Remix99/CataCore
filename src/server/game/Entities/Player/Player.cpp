@@ -13531,7 +13531,7 @@ void Player::AddEnchantmentDuration(Item *item,EnchantmentSlot slot,uint32 durat
 
 	if (slot == REFORGE_ENCHANTMENT_SLOT)
     {
-        ApplyItemReforge(item, apply);
+        //ApplyItemReforge(item, apply);
         return;
     }
 
