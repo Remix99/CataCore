@@ -4542,10 +4542,6 @@ void AuraEffect::HandleAuraModIncreaseSpeed(AuraApplication const *aurApp, uint8
 
     Unit *target = aurApp->GetTarget();
 
-	    //Spirit walk removes imparing effects
-    if (apply && GetSpellInfo()->Id == 58875) // Spirit Walk
-        target->CastSpell(target, 58876, true);
-
     target->UpdateSpeed(MOVE_RUN, true);
     
     if (apply)
