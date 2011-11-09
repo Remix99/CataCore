@@ -2654,7 +2654,7 @@ void Spell::EffectPowerBurn(SpellEffIndex effIndex)
 void Spell::EffectHeal(SpellEffIndex /*effIndex*/)
 {
     // Chakra Talent
-    if (m_caster->HasAura(14571))
+    if (m_caster->HasAura(14751))
     {
         switch(m_spellInfo->Id)
         {
@@ -2676,6 +2676,10 @@ void Spell::EffectHeal(SpellEffIndex /*effIndex*/)
                 break;
             // Prayer of Healing
             case 596:
+                m_caster->CastSpell(m_caster, 81206, true); // Chakra: Sanctuary
+                break;
+				// Prayer of Mending    TODO : should be fixed cause this is not a spellEffect but an AuraEffect    by Magma
+            case 41635:
                 m_caster->CastSpell(m_caster, 81206, true); // Chakra: Sanctuary
                 break;
         }
