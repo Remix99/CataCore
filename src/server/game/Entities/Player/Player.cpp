@@ -13529,12 +13529,6 @@ void Player::AddEnchantmentDuration(Item *item,EnchantmentSlot slot,uint32 durat
     if (slot >= MAX_ENCHANTMENT_SLOT)
         return;
 
-	if (slot == REFORGE_ENCHANTMENT_SLOT)
-    {
-        ApplyItemReforge(item, apply);
-        return;
-    }
-
     for (EnchantDurationList::iterator itr = m_enchantDuration.begin(); itr != m_enchantDuration.end(); ++itr)
     {
         if (itr->item == item && itr->slot == slot)
@@ -13564,6 +13558,12 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
 
     if (slot >= MAX_ENCHANTMENT_SLOT)
         return;
+
+	if (slot == REFORGE_ENCHANTMENT_SLOT)
+    {
+        ApplyItemReforge(item, apply);
+        return;
+    }
 
     uint32 enchant_id = item->GetEnchantmentId(slot);
     if (!enchant_id)
