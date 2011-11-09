@@ -5878,7 +5878,7 @@ void Player::SetRegularAttackTime()
 {
     for (uint8 i = 0; i < MAX_ATTACK; ++i)
     {
-		uint32 attackTime = BASE_ATTACK_TIME;
+        uint32 attackTime = BASE_ATTACK_TIME;
         Item *tmpitem = GetWeaponForAttack(WeaponAttackType(i), true);
         if (tmpitem && !tmpitem->IsBroken())
         {
