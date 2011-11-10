@@ -6637,6 +6637,24 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 basepoints0 = (int32)GetAttackTime(BASE_ATTACK) * int32(ap * 0.022f + 0.044f * holy) / 1000;
                 break;
             }
+			// Sacred Shield
+             if (dummySpell->SpellFamilyFlags[1]&0x00080000)
+             {
+                 if (procFlag & PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_POS)
+                 {
+                     if (procSpell->SpellFamilyFlags[0] & 0x40000000)
+                     {
+                         basepoints0 = int32(float(damage)/12.0f);
+                         CastCustomSpell(this,66922,&basepoints0,NULL,NULL,true,0,triggeredByAura, pVictim->GetGUID());
+                         return true;
+                     }
+                     else
+                         return false;
+                 }
+                 else if (damage > 0)
+                   target = this;
+                 break;
+             }
             // Light's Beacon - Beacon of Light
             if (dummySpell->Id == 53651)
             {
