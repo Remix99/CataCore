@@ -5118,7 +5118,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 25997;
 
                      break;
-
                     // return damage % to attacker but < 50% own total health
                     // basepoints0 = int32((triggerAmount * damage) /100);
           basepoints0 = 10*int32(damage)/100;
