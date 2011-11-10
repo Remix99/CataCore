@@ -5111,8 +5111,19 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 case 25988:
                 {
                     // return damage % to attacker but < 50% own total health
-                    basepoints0 = int32((triggerAmount * damage) /100);
+                    basepoints0 = 5*int32(damage)/100;
+                    if (basepoints0 > GetMaxHealth()/2)
+                        basepoints0 = GetMaxHealth()/2;
 
+                    triggered_spell_id = 25997;
+
+                     break;
+                }
+                case 25988:
+                {
+                    // return damage % to attacker but < 50% own total health
+                    // basepoints0 = int32((triggerAmount * damage) /100);
+          basepoints0 = 10*int32(damage)/100;
                     int32 halfMaxHealth = int32(CountPctFromMaxHealth(50));
                     if (basepoints0 > halfMaxHealth)
                         basepoints0 = halfMaxHealth;
@@ -6701,9 +6712,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 // Judgements of the Bold
                 case 89901:
                 {
-                    target = this;
-                    triggered_spell_id = 89906;
-                     break;
+          if (roll_chance_f(triggerAmount) && !this->IsWithinDistInMap(pVictim, 15.0f))
+          {
+            target = this;
+            triggered_spell_id = 89906;
+            break;
+          }
                 }
                     break;
 			    // Ancient Healer
