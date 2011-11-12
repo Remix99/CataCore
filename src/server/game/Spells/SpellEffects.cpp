@@ -6129,8 +6129,22 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                         m_caster->CastSpell(unitTarget, 55095, true);
                 }
             }
+      if (m_spellInfo->Id == 85948)
+            {
+        int32 r = urand(2, 6);
+        int32 CoI = 45524;
+        int32 FF = 55095;
+        int32 BP = 55078;
+
+                if (unitTarget->GetAura(CoI)) // Chains of Ice
+                    unitTarget->GetAura(CoI)->SetDuration((unitTarget->GetAura(CoI)->GetDuration() + r * 1000), true);
+        if (unitTarget->GetAura(FF)) // Frost Fever
+                    unitTarget->GetAura(FF)->SetDuration((unitTarget->GetAura(FF)->GetDuration() + r * 1000), true);
+        if (unitTarget->GetAura(BP)) // Blood Plague
+                    unitTarget->GetAura(BP)->SetDuration((unitTarget->GetAura(BP)->GetDuration() + r * 1000), true);
+            }
             break;
-        }
+    }
         case SPELLFAMILY_WARRIOR:
         {
             // Shattering Throw
