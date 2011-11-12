@@ -102,6 +102,7 @@ typedef std::vector<VehicleAccessory> VehicleAccessoryList;
 typedef std::map<uint32, VehicleAccessoryList> VehicleAccessoryMap;
 typedef std::map<uint32, VehicleScalingInfo> VehicleScalingMap;
 typedef std::map<int8, VehicleSeat> SeatMap;
+typedef std::set<uint64> GuidSet;
 
 class Vehicle
 {
@@ -121,6 +122,7 @@ class Vehicle
 
         bool HasEmptySeat(int8 seatId) const;
         Unit *GetPassenger(int8 seatId) const;
+		    void TeleportVehicle(float x, float y, float z, float ang);
         int8 GetNextEmptySeat(int8 seatId, bool next, bool byAura = false) const;
         bool AddPassenger(Unit *passenger, int8 seatId = -1, bool byAura = false);
         void RemovePassenger(Unit *passenger);
@@ -137,6 +139,7 @@ class Vehicle
     protected:
         Unit *me;
         VehicleEntry const *m_vehicleInfo;
+		    GuidSet vehiclePlayers;
         uint32 m_usableSeatNum;         // Number of seats that match VehicleSeatEntry::UsableByPlayer, used for proper display flags
         uint32 m_bonusHP;
 
