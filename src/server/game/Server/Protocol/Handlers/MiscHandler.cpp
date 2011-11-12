@@ -1766,7 +1766,7 @@ void WorldSession::SendSetPhaseShift(uint32 PhaseShift, uint32 MapID)
 //Battlefield and Battleground
 void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket & recv_data)
 {
-    sLog->outDebug("WORLD: CMSG_AREA_SPIRIT_HEALER_QUERY");
+    sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: CMSG_AREA_SPIRIT_HEALER_QUERY");
 
     Battleground *bg = _player->GetBattleground();
 
@@ -1785,12 +1785,11 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket & recv_data)
 
     if(Battlefield* Bf=sBattlefieldMgr->GetBattlefieldToZoneId(_player->GetZoneId()))
         Bf->SendAreaSpiritHealerQueryOpcode(_player,guid);
-
 }
 
 void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket & recv_data)
 {
-    sLog->outDebug("WORLD: CMSG_AREA_SPIRIT_HEALER_QUEUE");
+    sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: CMSG_AREA_SPIRIT_HEALER_QUEUE");
 
     Battleground *bg = _player->GetBattleground();
 
@@ -1809,7 +1808,6 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket & recv_data)
 
     if(Battlefield* Bf=sBattlefieldMgr->GetBattlefieldToZoneId(_player->GetZoneId()))
         Bf->AddPlayerToResurrectQueue(guid, _player->GetGUID());
-
 }
 
 void WorldSession::HandleHearthAndResurrect(WorldPacket& /*recv_data*/)

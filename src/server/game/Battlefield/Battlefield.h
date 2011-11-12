@@ -143,8 +143,6 @@ public:
     void AddPlayer(uint64 player_guid);
     void RemovePlayer(uint64 player_guid);
     
-
-
     void Resurrect();
     void RelocateDeadPlayers();
 
