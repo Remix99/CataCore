@@ -1,5 +1,5 @@
 -- Replace Wintergrasp spawns with properly phased spawns
-SET @GUID := 290000;
+SET @GUID := 890000;
 DELETE FROM `creature` WHERE `id` IN (31841,31842,30400,30499,30489,30869,31036,31051,31052,31054,31108,31109,31153,39172,30870,31053,31091,31101,31102,31106,31107,31151,32294,39173,32296,30488);
 INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`) VALUES
 -- Taunka Spirit Guide (Horde)
@@ -155,7 +155,7 @@ INSERT INTO `waypoint_data` (`id`,`point`,`position_x`,`position_y`,`position_z`
 (@PATH,6,5296.644,2731.107,409.3163,0,0,0,100,0);
 
 -- Guards "Alliance" (Valiance Expedition Champion)
-SET @GUID := 291000;
+SET @GUID := 891000;
 DELETE FROM `creature` WHERE `id`=30740;
 INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`) VALUES
 -- Fortress
