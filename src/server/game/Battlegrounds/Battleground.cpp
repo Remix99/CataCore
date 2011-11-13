@@ -1164,7 +1164,7 @@ void Battleground::AddOrSetPlayerToCorrectBgGroup(Player* player, uint32 team)
     {
         group = new Group;
         SetBgRaid(team, group);
-        group->Create(player);
+        group->Create(player->GetGUID(),player->GetName());
     }
     else                                            // raid already exist
     {
