@@ -1165,8 +1165,8 @@ void Battleground::AddOrSetPlayerToCorrectBgGroup(Player* player, uint32 team)
         group = new Group;
         SetBgRaid(team, group);
         group->Create(player);
-	}    
-	else                                            // raid already exist
+    }
+    else                                            // raid already exist
     {
         if (group->IsMember(playerGuid))
         {
@@ -1175,7 +1175,7 @@ void Battleground::AddOrSetPlayerToCorrectBgGroup(Player* player, uint32 team)
         }
         else
         {
-            group->AddMember(player);
+            group->AddMember(player->GetGUID(),player->GetName());
             if (Group* originalGroup = player->GetOriginalGroup())
                 if (originalGroup->IsLeader(playerGuid))
                 {
