@@ -1199,7 +1199,7 @@ void FreeMPQFile(TMPQFile *& hf)
         FREEMEM(hf);
         hf = NULL;
     }
-}
+}
 
 // Frees the MPQ archive
 void FreeMPQArchive(TMPQArchive *& ha)

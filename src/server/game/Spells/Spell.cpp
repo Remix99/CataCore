@@ -3510,7 +3510,7 @@ void Spell::handle_immediate()
     _handle_immediate_phase();
 
     for (std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
-    DoAllEffectOnTarget(&(*ihit));
+        DoAllEffectOnTarget(&(*ihit));
 
     for (std::list<GOTargetInfo>::iterator ihit= m_UniqueGOTargetInfo.begin(); ihit != m_UniqueGOTargetInfo.end(); ++ihit)
         DoAllEffectOnTarget(&(*ihit));

@@ -1049,21 +1049,6 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage *damageInfo, int32 dama
 
     if (spellInfo->AttributesEx4 & SPELL_ATTR4_FIXED_DAMAGE)
     {
-	  Unit *pVictim = damageInfo->target;
-        if (!pVictim || !pVictim->isAlive())
-            return;
-
-        SpellSchoolMask damageSchoolMask = SpellSchoolMask(damageInfo->schoolMask);
-
-        // Calculate absorb resist
-        if (damage > 0)
-        {
-            CalcAbsorbResist(pVictim, damageSchoolMask, SPELL_DIRECT_DAMAGE, damage, &damageInfo->absorb, &damageInfo->resist, spellInfo);
-            damage -= damageInfo->absorb + damageInfo->resist;
-        }
-        else
-            damage = 0;
-
         damageInfo->damage = damage;
         return;
     }
@@ -5112,6 +5097,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 {
                     // return damage % to attacker but < 50% own total health
                     basepoints0 = int32((triggerAmount * damage) /100);
+
                     int32 halfMaxHealth = int32(CountPctFromMaxHealth(50));
                     if (basepoints0 > halfMaxHealth)
                         basepoints0 = halfMaxHealth;
@@ -6636,24 +6622,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 basepoints0 = (int32)GetAttackTime(BASE_ATTACK) * int32(ap * 0.022f + 0.044f * holy) / 1000;
                 break;
             }
-			// Sacred Shield
-             if (dummySpell->SpellFamilyFlags[1]&0x00080000)
-             {
-                 if (procFlag & PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_POS)
-                 {
-                     if (procSpell->SpellFamilyFlags[0] & 0x40000000)
-                     {
-                         basepoints0 = int32(float(damage)/12.0f);
-                         CastCustomSpell(this,66922,&basepoints0,NULL,NULL,true,0,triggeredByAura, pVictim->GetGUID());
-                         return true;
-                     }
-                     else
-                         return false;
-                 }
-                 else if (damage > 0)
-                   target = this;
-                 break;
-             }
             // Light's Beacon - Beacon of Light
             if (dummySpell->Id == 53651)
             {
@@ -6677,6 +6645,24 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 }
                 return false;
             }
+            // Judgements of the Wise
+            if (dummySpell->SpellIconID == 3017)
+            {
+                target = this;
+                triggered_spell_id = 31930;
+                // replenishment
+                CastSpell(this,57669,true, castItem, triggeredByAura);
+                break;
+            }
+            // Sanctified Wrath
+            if (dummySpell->SpellIconID == 3029)
+            {
+                triggered_spell_id = 57318;
+                target = this;
+                basepoints0 = triggerAmount;
+                CastCustomSpell(target,triggered_spell_id,&basepoints0,&basepoints0,NULL,true,castItem,triggeredByAura);
+                return true;
+            }
             // Righteous Vengeance
             if (dummySpell->SpellIconID == 3025)
             {
@@ -6697,62 +6683,16 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
             }
             switch (dummySpell->Id)
             {
-                // Judgements of the Bold
-                case 89901:
-                {
-                target = this;
-                triggered_spell_id = 89906;
-                break;
-                }
+                // Heart of the Crusader
+                case 20335: // rank 1
+                    triggered_spell_id = 21183;
                     break;
-			    // Ancient Healer
-                case 86674:
-                {
-                    int32 bp0 = damage;
-                    int32 bp1 = ((bp0 * 10) / 100);
-
-                    if (!bp0 || !bp1)
-                        return false;
-
-                    if (pVictim && pVictim->IsFriendlyTo(this))
-                        CastCustomSpell(pVictim,86678,&bp0,&bp1,0,true,NULL,triggeredByAura,0);
-                    else
-                        CastCustomSpell(this,86678,&bp0,&bp1,0,true,NULL,triggeredByAura,0);
-                    return true;
-                }
-                // Ancient Crusader - Player
-                case 86701:
-                {
-                    target = this;
-                    triggered_spell_id = 86700;
+                case 20336: // rank 2
+                    triggered_spell_id = 54498;
                     break;
-                }
-                // Uncomment this once the guardian is receiving the aura via
-                // creature template addon and redirect aura procs to the owner
-                // Ancient Crusader - Guardian
-                /*
-                case 86703:
-                {
-                    Unit* owner = this->GetOwner();
-     
-                    if (!owner)
-                        return false;
-     
-                    owner->CastSpell(owner, 86700, true);
-                    return true;
-                }*/
-			     // Long Arm of The law
-                case 87168:
-                case 87172:
-                {
-                    if (roll_chance_f(triggerAmount) && !this->IsWithinDistInMap(pVictim, 15.0f))
-                    {
-                        target = this;
-                        triggered_spell_id = 87173;
-                        break;
-                    }
-                }
-
+                case 20337: // rank 3
+                    triggered_spell_id = 54499;
+                    break;
                 // Judgement of Light
                 case 20185:
                 {
@@ -9009,16 +8949,6 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
                 return false;
             break;
         }
-		
-    // Incite:
-        // gives your Heroic Strike criticals a 100% chance to cause the next Heroic Strike to also be a critical strike.
-        // These guaranteed criticals cannot re-trigger the Incite effect.
-        case 86627:
-        {
-            if (HasAura(86627))
-                return false;
-            break;
-        }
     }
 
     if (cooldown && GetTypeId() == TYPEID_PLAYER && ToPlayer()->HasSpellCooldown(trigger_spell_id))
@@ -10510,8 +10440,16 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         case SPELLFAMILY_MAGE:
             // Ice Lance
             if (spellProto->SpellIconID == 186)
+            {
                 if (pVictim->HasAuraState(AURA_STATE_FROZEN, spellProto, this))
-                     DoneTotalMod *= 2.0f;
+                {
+                    // Glyph of Ice Lance
+                    if (owner->HasAura(56377) && pVictim->getLevel() > owner->getLevel())
+                        DoneTotalMod *= 4.0f;
+                    else
+                        DoneTotalMod *= 3.0f;
+                }
+            }
 
             // Torment the weak
             if (spellProto->SpellFamilyFlags[0]&0x20200021 || spellProto->SpellFamilyFlags[1]& 0x9000)
@@ -11199,11 +11137,10 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     // no bonus for heal potions/bandages
     if (spellProto->SpellFamilyName == SPELLFAMILY_POTION)
         return healamount;
- 
-	// and Warlock's Healthstones
+    // and Warlock's Healthstones      
     if (spellProto->SpellFamilyName == SPELLFAMILY_WARLOCK && (spellProto->SpellFamilyFlags[0] & 0x10000))
     {
-        healamount = 0.45 * (GetMaxHealth() - 10 * (STAT_STAMINA - 180));
+        healamount = 0.45 * (GetMaxHealth() - 10 * (STAT_STAMINA - 180));    
         return healamount;
     }
     // Healing Done

@@ -3762,7 +3762,7 @@ void SpellMgr::LoadSpellCustomAttr()
             count++;
             break;
         case 77489: // Mastery: Echo of Light
-            spellInfo->StackAmount = 1; // should be inf
+            spellInfo->StackAmount = 100; // should be inf
             count++;
             break;
         case 51514: // Hex
@@ -3856,16 +3856,6 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->excludeCasterAuraSpell = 57724; // Sated
             count++;
             break;
-		// Time Warp
-        case 80353:
-            spellInfo->excludeCasterAuraSpell = 80354; // Temporal Displacement
-            count++;
-            break;
-        // Ancient Hysteria
-        case 90355:
-            spellInfo->excludeCasterAuraSpell = 95809; // Insanity
-            count++;
-            break;
         // Heart of the Crusader
         case 20335:
         case 20336:
@@ -3916,7 +3906,6 @@ void SpellMgr::LoadSpellCustomAttr()
         case 71904:                             // Chaos Bane
         case 70492: case 72505:                 // Ooze Eruption
         case 72624: case 72625:                 // Ooze Eruption
-        case 86704:                             // Ancient Fury
             // ONLY SPELLS WITH SPELLFAMILY_GENERIC and EFFECT_SCHOOL_DAMAGE
             mSpellCustomAttr[i] |= SPELL_ATTR0_CU_SHARE_DAMAGE;
             count++;
@@ -4172,13 +4161,8 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_INTERRUPT;
             count++;
             break;
-        case 44203: // Tranquility
-            spellInfo->MaxAffectedTargets = 5;
-            count++;
-            break;
         case 26573 : //Consecration
-            spellInfo->EffectTriggerSpell[1] = 82366;
-            spellInfo->EffectTriggerSpell[2] = 36946;
+            spellInfo->EffectTriggerSpell[2] = 82366;
             count++;
             break;
         case 64321: // Potent Pheromones
@@ -4239,10 +4223,6 @@ void SpellMgr::LoadSpellCustomAttr()
         case 63675: // Improved Devouring Plague
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
             count++;
-            break;
-        case 86674: // Ancient Healer
-			spellInfo->procCharges = 5;
-			count++;
             break;
         case 81782: // Power Word : Barrier 
             spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ALLY;

@@ -30,7 +30,6 @@
 #include "ObjectMgr.h"
 #include "InstanceScript.h"
 #include "Group.h"
-#include "GameEventMgr.h"
 
 void BuildPlayerLockDungeonBlock(WorldPacket& data, const LfgLockMap& lock)
 {
@@ -172,27 +171,6 @@ void WorldSession::HandleLfgPlayerLockInfoRequestOpcode(WorldPacket& /*recv_data
         if (dungeon && dungeon->type == LFG_TYPE_RANDOM && dungeon->expansion <= expansion &&
             dungeon->minlevel <= level && level <= dungeon->maxlevel)
             randomDungeons.insert(dungeon->Entry());
-		// Dungeons Seleccionables con el evento en el server correspondiente. (En Dungeon Finder)
-        if (dungeon && dungeon->grouptype == 11 && dungeon->expansion <= expansion && dungeon->minlevel <= level && level <= dungeon->maxlevel)
-        {
-                    QueryResult result = WorldDatabase.Query("SELECT dungeonId, eventEntry FROM lfg_dungeon_event");
- 
-                    if (!result)
-                        return;
- 
-          Field* fields = NULL;
-          do
-          {
-            fields = result->Fetch();
-            uint32 dungeonId = fields[0].GetUInt32();
-            uint32 eventEntry = fields[1].GetUInt32();
-            if (dungeonId != dungeon->ID ) 
-              continue;
-
-            if (eventEntry && sGameEventMgr->IsActiveEvent(eventEntry))
-              randomDungeons.insert(dungeon->Entry());
-           } while (result->NextRow());
-    }
     }
 
     // Get player locked Dungeons

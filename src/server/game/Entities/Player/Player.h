@@ -1372,7 +1372,6 @@ class Player : public Unit, public GridObject<Player>
         void AddEnchantmentDuration(Item *item, EnchantmentSlot slot, uint32 duration);
         void ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool apply_dur = true, bool ignore_condition = false);
         void ApplyEnchantment(Item *item, bool apply);
-        void ApplyItemReforge(Item *item, bool apply);
         void UpdateSkillEnchantments(uint16 skill_id, uint16 curr_value, uint16 new_value);
         void SendEnchantmentDurations();
         void BuildEnchantmentsInfoData(WorldPacket *data);
@@ -1928,7 +1927,7 @@ class Player : public Unit, public GridObject<Player>
         float GetMasteryPoints() { return CaclulateMasteryFromMasteryRating(m_baseRatingValue[CR_MASTERY]); }
         float CaclulateMasteryFromMasteryRating(int32 curr_rating)  { return float(curr_rating * 0.0055779569892473f); }
         int32 CaclulateMasteryRatingFromMastery(float curr_mastery) { return int32(curr_mastery / 0.0055779569892473f); }
-        /* void RemoveOrAddMasterySpells(); */
+        void RemoveOrAddMasterySpells();
 
         void UpdateAllSpellCritChances();
         void UpdateSpellCritChance(uint32 school);

@@ -866,7 +866,7 @@ enum Opcodes
     CMSG_BATTLEMASTER_JOIN_ARENA                     = 0x00311, // 4.0.6a 13623
     MSG_MOVE_START_ASCEND                            = 0x0BDC0, // 4.0.6a 13623
     MSG_MOVE_STOP_ASCEND                             = 0x0FCA8, // 4.0.6a 13623
-    SMSG_ARENA_TEAM_STATS                            = 0x0FA80, // 4.0.6a 13623
+    SMSG_ARENA_TEAM_STATS                            = 0x09F5F, //
     CMSG_LFG_JOIN                                    = 0x063C0, // 4.0.6a 13623
     CMSG_LFG_LEAVE                                   = 0x03688, // 4.0.6a 13623
     CMSG_SEARCH_LFG_JOIN                             = 0x061CC, // 4.0.6a 13623
@@ -1300,8 +1300,6 @@ enum Opcodes
     CMSG_WORLD_LOGIN                                 = 0x08508, // 4.0.6a 13623
     CMSG_RETURN_TO_GRAVEYARD                         = 0x00593, // 4.0.6a 13623
     SMSG_UNKNOWN_1330                                = 0x0618C, // 4.0.6a 13623
-	CMSG_REFORGE                                     = 0x00313, // 4.0.6a 13623
-	SMSG_SHOW_REFORGE                                = 0x00C5C, // 4.0.6a 13623
     NUM_MSG_TYPES                                    = 0x102B7  // last unknown opcode + 1.
 };
 

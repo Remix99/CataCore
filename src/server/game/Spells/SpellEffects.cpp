@@ -76,7 +76,7 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
     &Spell::EffectUnused,                                   //  4 SPELL_EFFECT_PORTAL_TELEPORT          unused
     &Spell::EffectTeleportUnits,                            //  5 SPELL_EFFECT_TELEPORT_UNITS
     &Spell::EffectApplyAura,                                //  6 SPELL_EFFECT_APPLY_AURA
-    &Spell::EffectEnvironmentalDMG,                         //  7 SPELL_EFFECT_ENVIRONMENTAL_DAMAGE
+    &Spell::EffectEnvirinmentalDMG,                         //  7 SPELL_EFFECT_ENVIRONMENTAL_DAMAGE
     &Spell::EffectPowerDrain,                               //  8 SPELL_EFFECT_POWER_DRAIN
     &Spell::EffectHealthLeech,                              //  9 SPELL_EFFECT_HEALTH_LEECH
     &Spell::EffectHeal,                                     // 10 SPELL_EFFECT_HEAL
@@ -316,7 +316,7 @@ void Spell::EffectInstaKill(SpellEffIndex /*effIndex*/)
     m_caster->DealDamage(unitTarget, unitTarget->GetHealth(), NULL, NODAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 }
 
-void Spell::EffectEnvironmentalDMG(SpellEffIndex effIndex)
+void Spell::EffectEnvirinmentalDMG(SpellEffIndex effIndex)
 {
     uint32 absorb = 0;
     uint32 resist = 0;
@@ -396,18 +396,6 @@ void Spell::SpellDamageSchoolDmg(SpellEffIndex effIndex)
                     case 28865:
                         damage = (((InstanceMap*)m_caster->GetMap())->GetDifficulty() == REGULAR_DIFFICULTY ? 2750 : 4250);
                         break;
-					// Ancient Fury
-                    case 86704:
-                    {
-                        Aura* ancientpower = m_caster->GetAura(86700);
-
-                        if (!ancientpower)
-                            return;
-
-                        damage = (damage * ancientpower->GetStackAmount()) ;
-                        break;
-                    }
-
                     // percent from health with min
                     case 25599:                             // Thundercrash
                     {
@@ -621,55 +609,18 @@ void Spell::SpellDamageSchoolDmg(SpellEffIndex effIndex)
             case SPELLFAMILY_PRIEST:
             { 
               // Evangelism 
-                switch (m_spellInfo->Id)
-                {
-                    case 73413:  // inner will
-                        m_caster->RemoveAurasDueToSpell(588);
-                        break;
-                    case 588:    // inner fire
-                        m_caster->RemoveAurasDueToSpell(73413);
-                         break;
-                }
-
-                if (m_spellInfo->Id == 589 || m_spellInfo->Id == 15407)  //Shadow Word: Pain | mind flay
-                {
-                    if (m_caster->HasSpell(95740))   // Shadow Orbs
-                    {
-                        int chance = 10;
-
-                        if (m_caster->HasAura(33191)) // Harnessed Shadows rank1
-                            chance += 4;
-                        else if(m_caster->HasAura(78228))  // Harnessed Shadows rank2
-                            chance += 8;
-
-                        if (roll_chance_i(chance))
-                            m_caster->CastSpell(m_caster, 77487, true);
-                    }
-                }
-
-                if (m_caster->HasAura(81659)) // Evangelism Rank 1
+                if (m_caster->HasAura(81659)) // Rank 1
                 { 
-                    if (m_spellInfo->Id == 585 || m_spellInfo->Id == 14914 || m_spellInfo->Id == 15407)  // Smite | Holy Fire | mind flay
+                    if (m_spellInfo->Id == 585)
                         m_caster->CastSpell(m_caster,81660,true);
                 }
+                else
                  
-                if (m_caster->HasAura(81662)) // Evangelism Rank 2
+                if (m_caster->HasAura(81662)) // Rank 2
                 {
-                    if (m_spellInfo->Id == 585 || m_spellInfo->Id == 14914 || m_spellInfo->Id == 15407)  // Smite | Holy Fire | mind flay
+                    if (m_spellInfo->Id == 585)
                         m_caster->CastSpell(m_caster,81661,true);
                 }
-				//Dark Evangelism  not implemented yet
-                if (m_caster->HasAura(81659))                     // Evangelism rank 1
-                {
-                    if (m_spellInfo->Id == 15407)                   //  Mind Flay
-                        m_caster->CastSpell(m_caster,87117,true);   // Dark Evangelism
-                }
-                else if (m_caster->HasAura(81662))                  // Evangelism rank 2
-                {
-                    if (m_spellInfo->Id == 15407)                   //  Mind Flay
-                        m_caster->CastSpell(m_caster,87118,true);   // Dark Evangelism
-                }
-                break;
 
                 // Chakra
                 if (m_caster->HasAura(14751))
@@ -1589,7 +1540,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
             if (m_spellInfo->SpellFamilyFlags[0] & SPELLFAMILYFLAG_WARRIOR_SLAM && m_spellInfo->SpellIconID == 559)
             {
                 int32 bp0 = damage;
-                m_caster->CastCustomSpell(unitTarget, 50782, &bp0, NULL, NULL, true, 0);
+                m_caster->CastCustomSpell(unitTarget, 50783, &bp0, NULL, NULL, true, 0);
                 return;
             }
             // Execute
@@ -1666,8 +1617,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     if (AuraEffect const * aurEff = m_caster->GetDummyAuraEffect(SPELLFAMILY_WARLOCK, 208, 0))
                         mana = (aurEff->GetAmount() + 100)* mana / 100;
 
-                    m_caster->ModifyPower(POWER_MANA, mana);
-                    //m_caster->CastCustomSpell(unitTarget, 31818, &mana, NULL, NULL, true); 
+                    m_caster->CastCustomSpell(unitTarget, 31818, &mana, NULL, NULL, true);
 
                     // Mana Feed
                     int32 manaFeedVal = 0;
@@ -1745,17 +1695,6 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
 
             switch (m_spellInfo->Id)
             {   
-			// Guardian of Ancient Kings
-                case 86150:
-                {
-                    if (m_caster->ToPlayer()->HasSpell(20473)) // Holy Shock
-                        m_caster->CastSpell(m_caster,86669,true);
-                    if (m_caster->ToPlayer()->HasSpell(85256)) // Templar's Verdict
-                        m_caster->CastSpell(m_caster,86698,true);
-                    if (m_caster->ToPlayer()->HasSpell(31935)) // Avenger's shield
-                        m_caster->CastSpell(m_caster,86659,true);
-                    return;
-                }
                 case 19740: // Blessing of Might
                 {
                     if (m_caster->GetTypeId() == TYPEID_PLAYER)
@@ -2692,7 +2631,7 @@ void Spell::EffectPowerBurn(SpellEffIndex effIndex)
 void Spell::EffectHeal(SpellEffIndex /*effIndex*/)
 {
     // Chakra Talent
-    if (m_caster->HasAura(14751))
+    if (m_caster->HasAura(14571))
     {
         switch(m_spellInfo->Id)
         {
@@ -2714,10 +2653,6 @@ void Spell::EffectHeal(SpellEffIndex /*effIndex*/)
                 break;
             // Prayer of Healing
             case 596:
-                m_caster->CastSpell(m_caster, 81206, true); // Chakra: Sanctuary
-                break;
-				// Prayer of Mending    TODO : should be fixed cause this is not a spellEffect but an AuraEffect    by Magma
-            case 41635:
                 m_caster->CastSpell(m_caster, 81206, true); // Chakra: Sanctuary
                 break;
         }
@@ -3162,6 +3097,7 @@ void Spell::EffectEnergize(SpellEffIndex effIndex)
             level_diff = m_caster->getLevel() - 60;
             level_multiplier = 4;
             break;
+        case 31930:                                         // Judgements of the Wise
         case 63375:                                         // Improved Stormstrike
         case 68082:                                         // Glyph of Seal of Command
             damage = damage * unitTarget->GetCreateMana() / 100;
@@ -4777,7 +4713,7 @@ void Spell::SpellDamageWeaponDmg(SpellEffIndex effIndex)
                 // Glyph of Death Strike
                 if (AuraEffect const * aurEff = m_caster->GetAuraEffect(59336, EFFECT_0))
                     if (uint32 runic = std::min<uint32>(m_caster->GetPower(POWER_RUNIC_POWER), SpellMgr::CalculateSpellEffectAmount(aurEff->GetSpellProto(), EFFECT_1)))
-                        totalDamagePercentMod *= ((runic * 0.4f) + 100.0f) / 100.0f;
+                        totalDamagePercentMod *= (runic + 100.0f) / 100.0f;
                 break;
             }
             // Obliterate (12.5% more damage per disease)
@@ -5999,13 +5935,38 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
             {
                 if (!unitTarget || !unitTarget->isAlive())
                     return;
-                uint32 spellId = 0;
+                uint32 spellId1 = 0;
+                uint32 spellId2 = 0;
+                uint32 spellId3 = 0;
 
-
-                // Seal of Truth and Seal of Righteoussness have a dummy aura on effect 2
+                // Judgement self add switch
+                switch (m_spellInfo->Id)
+                {
+                    case 53407: spellId1 = 20184; break;    // Judgement of Justice
+                    case 20271:                             // Judgement of Light
+                    case 57774: spellId1 = 20185; break;    // Judgement of Light
+                    case 53408: spellId1 = 20186; break;    // Judgement of Wisdom
+                    default:
+                        sLog->outError("Unsupported Judgement (seal trigger) spell (Id: %u) in Spell::EffectScriptEffect",m_spellInfo->Id);
+                        return;
+                }
+                // all seals have aura dummy in 2 effect
                 Unit::AuraApplicationMap & sealAuras = m_caster->GetAppliedAuras();
                 for (Unit::AuraApplicationMap::iterator iter = sealAuras.begin(); iter != sealAuras.end();)
                 {
+                    switch (iter->first)
+                    {
+                        // Heart of the Crusader
+                        case 20335: // Rank 1
+                            spellId3 = 21183;
+                            break;
+                        case 20336: // Rank 2
+                            spellId3 = 54498;
+                            break;
+                        case 20337: // Rank 3
+                            spellId3 = 54499;
+                            break;
+                    }
                     Aura * aura = iter->second->GetBase();
                     if (IsSealSpell(aura->GetSpellProto()))
                     {
@@ -6013,17 +5974,18 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                             if (aureff->GetAuraType() == SPELL_AURA_DUMMY)
                             {
                                 if (sSpellStore.LookupEntry(aureff->GetAmount()))
-                                    spellId = aureff->GetAmount();
+                                    spellId2 = aureff->GetAmount();
                                 break;
                             }
-                        if (!spellId)
+                        if (!spellId2)
                         {
                             switch (iter->first)
                             {
-                                // Seal of Insigth, Seal of Justice
+                                // Seal of light, Seal of wisdom, Seal of justice
                                 case 20165:
+                                case 20166:
                                 case 20164:
-                                    spellId = 54158;
+                                    spellId2 = 54158;
                             }
                         }
                         break;
@@ -6031,25 +5993,12 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                     else
                         ++iter;
                 }
-                // Cast Judgement
-                if (spellId)
-                    m_caster->CastSpell(unitTarget, spellId, true);
-
-                // Check for Judgement dependent auras
-                Unit::AuraApplicationMap & talentauras = m_caster->GetAppliedAuras();
-                for (Unit::AuraApplicationMap::iterator iter = talentauras.begin(); iter != talentauras.end();)
-                {
-                    Aura * aura = iter->second->GetBase();
-                    switch (aura->GetId())
-                    {
-                        case 31876:
-                        {
-                            m_caster->CastSpell((Unit*)NULL,57669,true);
-                            break;
-                        }
-                    }
-                    ++iter;
-                }
+                if (spellId1)
+                    m_caster->CastSpell(unitTarget, spellId1, true);
+                if (spellId2)
+                    m_caster->CastSpell(unitTarget, spellId2, true);
+                if (spellId3)
+                    m_caster->CastSpell(unitTarget, spellId3, true);
                 return;
             }
         }
@@ -6129,22 +6078,8 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                         m_caster->CastSpell(unitTarget, 55095, true);
                 }
             }
-      if (m_spellInfo->Id == 85948)
-            {
-        int32 r = urand(2, 6);
-        int32 CoI = 45524;
-        int32 FF = 55095;
-        int32 BP = 55078;
-
-                if (unitTarget->GetAura(CoI)) // Chains of Ice
-                    unitTarget->GetAura(CoI)->SetDuration((unitTarget->GetAura(CoI)->GetDuration() + r * 1000), true);
-        if (unitTarget->GetAura(FF)) // Frost Fever
-                    unitTarget->GetAura(FF)->SetDuration((unitTarget->GetAura(FF)->GetDuration() + r * 1000), true);
-        if (unitTarget->GetAura(BP)) // Blood Plague
-                    unitTarget->GetAura(BP)->SetDuration((unitTarget->GetAura(BP)->GetDuration() + r * 1000), true);
-            }
             break;
-    }
+        }
         case SPELLFAMILY_WARRIOR:
         {
             // Shattering Throw

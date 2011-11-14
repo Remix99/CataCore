@@ -375,8 +375,7 @@ pAuraEffectHandler AuraEffectHandler[TOTAL_AURAS]=
     &AuraEffect::HandleNoImmediateEffect,                         //315 SPELL_AURA_UNDERWATER_WALKING todo
     &AuraEffect::HandleNoImmediateEffect,                         //316 SPELL_AURA_PERIODIC_HASTE implemented in AuraEffect::CalculatePeriodic
     &AuraEffect::HandleAuraModSpellPowerPercent,                  //317 SPELL_AURA_MOD_SPELL_POWER_PCT
-    &AuraEffect::HandleNULL,                                      //318 SPELL_AURA_MASTERY
-    /* &AuraEffect::HandleNoImmediateEffect,                         //318 SPELL_AURA_MASTERY */
+    &AuraEffect::HandleNoImmediateEffect,                         //318 SPELL_AURA_MASTERY
     &AuraEffect::HandleModMeleeSpeedPct,                          //319 This is actually mod haste (?)
     &AuraEffect::HandleNULL,                                      //320
     &AuraEffect::HandleNULL,                                      //321
@@ -1450,7 +1449,7 @@ void AuraEffect::PeriodicTick(AuraApplication * aurApp, Unit * caster) const
 
             if (GetAuraType() == SPELL_AURA_PERIODIC_DAMAGE)
             {
-                damage += caster->SpellDamageBonus(target, GetSpellProto(), GetEffIndex(), damage, DOT, GetBase()->GetStackAmount());
+                damage = caster->SpellDamageBonus(target, GetSpellProto(), GetEffIndex(), damage, DOT, GetBase()->GetStackAmount());
 
                 // Calculate armor mitigation
                 if (Unit::IsDamageReducedByArmor(GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), m_effIndex))
@@ -1753,7 +1752,6 @@ void AuraEffect::PeriodicTick(AuraApplication * aurApp, Unit * caster) const
                     addition += abs(int32((addition * aurEff->GetAmount()) / 50));
 
                 damage += addition;
-				damage = caster->SpellHealingBonus(target, GetSpellProto(), GetEffIndex(), damage, DOT, GetBase()->GetStackAmount());
             }
             switch (m_spellProto->Id)
             {
@@ -4087,12 +4085,13 @@ void AuraEffect::HandleAuraMounted(AuraApplication const *aurApp, uint8 mode, bo
     if (apply)
     {
         uint32 creatureEntry = GetMiscValue();
-       if (aurApp->GetBase()->GetId() == 87840)
-                       {
-       target->Mount(plr->getGender() == GENDER_FEMALE ? 29423 : 29422, 0, GetMiscValue());
-       target->Mount(plr->getGender() == GENDER_MALE ? 29422 : 29423, 0, GetMiscValue());
-       return;
-       }
+	    
+  if (aurApp->GetBase()->GetId() == 87840)
+  {
+    target->Mount(plr->getGender() == GENDER_FEMALE ? 29423 : 29422, 0, GetMiscValue());
+    target->Mount(plr->getGender() == GENDER_MALE ? 29422 : 29423, 0, GetMiscValue());
+    return;
+    }
 
         // Festive Holiday Mount
         if (target->HasAura(62061))
@@ -4658,7 +4657,7 @@ void AuraEffect::HandleModStateImmunityMask(AuraApplication const *aurApp, uint8
     std::list <AuraType> immunity_list;
     if (GetMiscValue() & (1<<10))
         immunity_list.push_back(SPELL_AURA_MOD_STUN);
-    if ((GetMiscValue() & (1<<7)) && !(apply && GetId() == 46924))// Bladestorm
+    if (GetMiscValue() & (1<<1))
         immunity_list.push_back(SPELL_AURA_TRANSFORM);
 
     // These flag can be recognized wrong:
@@ -5884,13 +5883,13 @@ void AuraEffect::HandleModDamagePercentDone(AuraApplication const *aurApp, uint8
         switch (GetBase()->GetUnitOwner()->GetPower(POWER_HOLY_POWER))
         {
             case 0: // 1HP
-                GetBase()->SetDuration(4000, true);
+                GetBase()->SetDuration(4000);
                 break;
             case 1: // 2HP
-                GetBase()->SetDuration(8000, true);
+                GetBase()->SetDuration(8000);
                 break;
             case 2: // 3HP
-                GetBase()->SetDuration(12000, true);
+                GetBase()->SetDuration(12000);
                 break;
         }
     target->SetPower(POWER_HOLY_POWER,0);
@@ -6059,25 +6058,6 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                     if (caster)
                         caster->CastSpell(caster, 13138, true, NULL, this);
                     break;
-					// Guardian of Ancient Kings - Retribution
-                case 86698:
-                {
-                    caster->CastSpell(caster,86701,true);
-                    break;
-                }
-                    // Guardian of Ancient Kings - Holy
-                case 86669:
-                {
-                    caster->CastSpell(caster,86674,true);
-                    break;
-                }
-                    // Sudden Death Cataclysm Proc
-                case 52437:
-                {
-                    if (caster && caster->ToPlayer()->HasSpellCooldown(86346))
-                        caster->ToPlayer()->RemoveSpellCooldown(86346,true);
-                    break;
-                }
                 case 34026:   // kill command
                 {
                     Unit *pet = target->GetGuardianPet();
@@ -6121,14 +6101,6 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                     }
                     break;
                 }
-				case 33763:
-          if (target->HasAura(92363, GetCasterGUID())) // Get talent Malfurion's gift rank 1
-            if (roll_chance_i(2)) // Procs only 2% of the time
-              target->CastSpell(caster, 16870, true, NULL, this); // Clearcasting
-          if (target->HasAura(92364, GetCasterGUID())) // Get talent Malfurion's gift rank 2
-            if (roll_chance_i(4)) // Procs only 4% of the time
-              target->CastSpell(caster, 16870, true, NULL, this); // Clearcasting
-        break;
                 case 39850:                                     // Rocket Blast
                     if (roll_chance_i(20))                       // backfire stun
                         target->CastSpell(target, 51581, true, NULL, this);
@@ -6360,23 +6332,6 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                     if (GetId() == 61777)
                         target->CastSpell(target, GetAmount(), true);
                     break;
-                case SPELLFAMILY_PALADIN:
-                {
-                    switch (GetId())
-                    {
-                        // Guardian of Ancient Kings - Retribution
-                        case 86698:
-                        {
-                            if (aurApp->GetBase()->GetOwner()->ToUnit()->HasAura(86700))
-                            {
-                                caster->CastSpell((Unit*)NULL,86704,true);
-                                caster->RemoveAura(86701);
-                                caster->RemoveAura(86700);
-                            }
-                            break;
-                        }
-                    }
-                }
             }
         }
     }
@@ -6467,10 +6422,10 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                 case 57724: // Sated
                 {
                     switch(GetId())
-                    target->ApplySpellImmune(GetId(), IMMUNITY_ID, 32182, apply);  // Heroism
-                    target->ApplySpellImmune(GetId(), IMMUNITY_ID, 2825, apply);   // Bloodlust
-                    target->ApplySpellImmune(GetId(), IMMUNITY_ID, 80353, apply);  // Time Warp
-                    target->ApplySpellImmune(GetId(), IMMUNITY_ID, 90355, apply);  // Ancient Hysteria
+                    {
+                        case 57723: target->ApplySpellImmune(GetId(), IMMUNITY_ID, 32182, apply); break; // Heroism
+                        case 57724: target->ApplySpellImmune(GetId(), IMMUNITY_ID, 2825, apply);  break; // Bloodlust
+                    }
                     break;
                 }
                 case 57819: // Argent Champion
@@ -6557,18 +6512,18 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                     }
                     break;
 
-       case 87840: //Rune wild
-                       if (target->GetTypeId() == TYPEID_PLAYER && target->HasAura(87840))
-                       {
-                       if (target->getLevel() >= 20 && target->getLevel() < 40)
-                               target->ToPlayer()->SetSpeed(MOVE_RUN, 1.6f, true);
-                       else if (target->getLevel() >= 40)
-                               target->ToPlayer()->SetSpeed(MOVE_RUN, 2.0f, true);
-                       }
-                       else target->ToPlayer()->SetSpeed(MOVE_RUN, 1.0f, true);
-                               target->ToPlayer()->setInWorgenForm(UNIT_FLAG2_WORGEN_TRANSFORM3);
-                               target->GetAuraEffectsByType(SPELL_AURA_MOUNTED).front()->GetMiscValue();
-                       break;
+        case 87840: //Rune wild
+                    if (target->GetTypeId() == TYPEID_PLAYER && target->HasAura(87840))
+                    {
+                    if (target->getLevel() >= 20 && target->getLevel() < 40)
+            target->ToPlayer()->SetSpeed(MOVE_RUN, 1.6f, true);
+                    else if (target->getLevel() >= 40)
+            target->ToPlayer()->SetSpeed(MOVE_RUN, 2.0f, true);
+                    }
+                    else target->ToPlayer()->SetSpeed(MOVE_RUN, 1.0f, true);
+            target->ToPlayer()->setInWorgenForm(UNIT_FLAG2_WORGEN_TRANSFORM3);
+            target->GetAuraEffectsByType(SPELL_AURA_MOUNTED).front()->GetMiscValue();
+                    break;
 
                 case 62061: // Festive Holiday Mount
                     if (target->HasAuraType(SPELL_AURA_MOUNTED))
@@ -6611,11 +6566,8 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                 {
                     if (apply)
                         caster->CastSpell(caster, 79808, true, NULL, NULL, GetCasterGUID()); // Arcane Missiles Aurastate
-                    break;
-                }
-                case 5143:
-                {
-                    caster->RemoveAurasDueToSpell(79808);
+                    else
+                        caster->RemoveAurasDueToSpell(79808);
                     break;
                 }
             }

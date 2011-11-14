@@ -1136,7 +1136,7 @@ BZFILE* BZ_API(BZ2_bzReadOpen)
    if (ret != BZ_OK)
       { BZ_SETERR(ret); free(bzf); return NULL; };
 
-   bzf->strm.avail_in = bzf->bufN;
+   bzf->strm.avail_in = bzf->bufN;
    bzf->strm.next_in  = bzf->buf;
 
    bzf->initialisedOk = True;
