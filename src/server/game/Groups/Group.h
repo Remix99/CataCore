@@ -24,7 +24,6 @@
 #define TRINITYCORE_GROUP_H
 
 #include "Battleground.h"
-#include "../../Battlefield/Battlefield.h"
 #include "DBCEnums.h"
 #include "GroupRefManager.h"
 #include "LootMgr.h"
@@ -208,7 +207,6 @@ class Group
         bool isLFGGroup()  const;
         bool isRaidGroup() const;
         bool isBGGroup()   const;
-        bool isBFGroup() const;
         bool IsCreated()   const;
         const uint64& GetLeaderGUID() const;
         const uint64& GetGUID() const;
@@ -243,7 +241,6 @@ class Group
         
         // some additional raid methods
         void SetBattlegroundGroup(Battleground *bg);
-		        void SetBattlefieldGroup(Battlefield *bf);
         GroupJoinBattlegroundResult CanJoinBattlegroundQueue(Battleground const* bgOrTemplate, BattlegroundQueueTypeId bgQueueTypeId, uint32 MinPlayerCount, uint32 MaxPlayerCount, bool isRated, uint32 arenaSlot);
 
         void ChangeMembersGroup(const uint64 &guid, const uint8 &group);
@@ -339,7 +336,6 @@ class Group
         Difficulty          m_dungeonDifficulty;
         Difficulty          m_raidDifficulty;
         Battleground*       m_bgGroup;
-        Battlefield*        m_bfGroup;
         uint64              m_targetIcons[TARGETICONCOUNT];
         LootMethod          m_lootMethod;
         uint64              m_looterGuid;

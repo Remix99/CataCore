@@ -157,7 +157,6 @@ set(scripts_STAT_SRCS
   Northrend/IcecrownCitadel/boss_blood_queen_lana_thel.cpp
   Northrend/IcecrownCitadel/boss_sindragosa.cpp
   Northrend/zuldrak.cpp
-  Northrend/wintergrasp.cpp
   Northrend/icecrown.cpp
   Northrend/Gundrak/boss_slad_ran.cpp
   Northrend/Gundrak/instance_gundrak.cpp

@@ -16,7 +16,6 @@ set(scripts_STAT_SRCS
 #  Commands/cs_wp.cpp
 #  Commands/cs_titles.cpp
 #  Commands/cs_quest.cpp
-  Commands/cs_bf.cpp
   Commands/cs_reload.cpp
 #  Commands/cs_list.cpp
 #  Commands/cs_lookup.cpp

@@ -1158,28 +1158,28 @@ void Battleground::AddPlayer(Player* plr)
 // this method adds player to his team's bg group, or sets his correct group if player is already in bg group
 void Battleground::AddOrSetPlayerToCorrectBgGroup(Player* player, uint32 team)
 {
-    uint64 playerGuid = player->GetGUID();
+    uint64 plr_guid = player->GetGUID();
     Group* group = GetBgRaid(team);
     if (!group)                                      // first player joined
     {
         group = new Group;
         SetBgRaid(team, group);
-        group->Create(player->GetGUID(),player->GetName());
+        group->Create(plr_guid, player->GetName());
     }
     else                                            // raid already exist
     {
-        if (group->IsMember(playerGuid))
+        if (group->IsMember(plr_guid))
         {
-            uint8 subgroup = group->GetMemberGroup(playerGuid);
-            player->SetBattlegroundOrBattlefieldRaid(group, subgroup);
+            uint8 subgroup = group->GetMemberGroup(plr_guid);
+            player->SetBattlegroundRaid(group, subgroup);
         }
         else
         {
-            group->AddMember(player->GetGUID(),player->GetName());
+            group->AddMember(plr_guid, player->GetName());
             if (Group* originalGroup = player->GetOriginalGroup())
-                if (originalGroup->IsLeader(playerGuid))
+                if (originalGroup->IsLeader(plr_guid))
                 {
-                    group->ChangeLeader(playerGuid);
+                    group->ChangeLeader(plr_guid);
                     group->SendUpdate();
                 }
         }
