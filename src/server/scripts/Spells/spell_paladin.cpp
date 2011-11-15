@@ -242,7 +242,9 @@ class spell_pal_judgements_of_the_bold : public SpellScriptLoader
     public:
         spell_pal_judgements_of_the_bold() : SpellScriptLoader("spell_pal_judgements_of_the_bold") { }
 
-		{
+        class spell_pal_judgements_of_the_bold_AuraScript : public AuraScript
+         {
+
             PrepareAuraScript(spell_pal_judgements_of_the_bold_AuraScript);
 
             void CalculateMana(AuraEffect const* /*aurEff*/, int32& amount, bool& canBeRecalculated)
