@@ -396,6 +396,18 @@ void Spell::SpellDamageSchoolDmg(SpellEffIndex effIndex)
                     case 28865:
                         damage = (((InstanceMap*)m_caster->GetMap())->GetDifficulty() == REGULAR_DIFFICULTY ? 2750 : 4250);
                         break;
+                    // Ancient Fury
+                    case 86704:
+                    {
+                        Aura* ancientpower = m_caster->GetAura(86700);
+
+                        if (!ancientpower)
+                            return;
+
+                        damage = (damage * ancientpower->GetStackAmount()) ;
+                        break;
+                    }
+
                     // percent from health with min
                     case 25599:                             // Thundercrash
                     {
@@ -1694,7 +1706,18 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
             }
 
             switch (m_spellInfo->Id)
-            {   
+            {  
+                // Guardian of Ancient Kings
+                case 86150:
+                {
+                    if (m_caster->ToPlayer()->HasSpell(20473)) // Holy Shock
+                        m_caster->CastSpell(m_caster,86669,true);
+                    if (m_caster->ToPlayer()->HasSpell(85256)) // Templar's Verdict
+                        m_caster->CastSpell(m_caster,86698,true);
+                    if (m_caster->ToPlayer()->HasSpell(31935)) // Avenger's shield
+                        m_caster->CastSpell(m_caster,86659,true);
+                    return;
+                }
                 case 19740: // Blessing of Might
                 {
                     if (m_caster->GetTypeId() == TYPEID_PLAYER)
@@ -3097,7 +3120,6 @@ void Spell::EffectEnergize(SpellEffIndex effIndex)
             level_diff = m_caster->getLevel() - 60;
             level_multiplier = 4;
             break;
-        case 31930:                                         // Judgements of the Wise
         case 63375:                                         // Improved Stormstrike
         case 68082:                                         // Glyph of Seal of Command
             damage = damage * unitTarget->GetCreateMana() / 100;
@@ -5935,38 +5957,13 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
             {
                 if (!unitTarget || !unitTarget->isAlive())
                     return;
-                uint32 spellId1 = 0;
-                uint32 spellId2 = 0;
-                uint32 spellId3 = 0;
+                uint32 spellId = 0;
 
-                // Judgement self add switch
-                switch (m_spellInfo->Id)
-                {
-                    case 53407: spellId1 = 20184; break;    // Judgement of Justice
-                    case 20271:                             // Judgement of Light
-                    case 57774: spellId1 = 20185; break;    // Judgement of Light
-                    case 53408: spellId1 = 20186; break;    // Judgement of Wisdom
-                    default:
-                        sLog->outError("Unsupported Judgement (seal trigger) spell (Id: %u) in Spell::EffectScriptEffect",m_spellInfo->Id);
-                        return;
-                }
-                // all seals have aura dummy in 2 effect
+
+                // Seal of Truth and Seal of Righteoussness have a dummy aura on effect 2
                 Unit::AuraApplicationMap & sealAuras = m_caster->GetAppliedAuras();
                 for (Unit::AuraApplicationMap::iterator iter = sealAuras.begin(); iter != sealAuras.end();)
                 {
-                    switch (iter->first)
-                    {
-                        // Heart of the Crusader
-                        case 20335: // Rank 1
-                            spellId3 = 21183;
-                            break;
-                        case 20336: // Rank 2
-                            spellId3 = 54498;
-                            break;
-                        case 20337: // Rank 3
-                            spellId3 = 54499;
-                            break;
-                    }
                     Aura * aura = iter->second->GetBase();
                     if (IsSealSpell(aura->GetSpellProto()))
                     {
@@ -5974,18 +5971,17 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                             if (aureff->GetAuraType() == SPELL_AURA_DUMMY)
                             {
                                 if (sSpellStore.LookupEntry(aureff->GetAmount()))
-                                    spellId2 = aureff->GetAmount();
+                                    spellId = aureff->GetAmount();
                                 break;
                             }
-                        if (!spellId2)
+                        if (!spellId)
                         {
                             switch (iter->first)
                             {
-                                // Seal of light, Seal of wisdom, Seal of justice
+                                // Seal of Insigth, Seal of Justice
                                 case 20165:
-                                case 20166:
                                 case 20164:
-                                    spellId2 = 54158;
+                                    spellId = 54158;
                             }
                         }
                         break;
@@ -5993,12 +5989,25 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                     else
                         ++iter;
                 }
-                if (spellId1)
-                    m_caster->CastSpell(unitTarget, spellId1, true);
-                if (spellId2)
-                    m_caster->CastSpell(unitTarget, spellId2, true);
-                if (spellId3)
-                    m_caster->CastSpell(unitTarget, spellId3, true);
+                // Cast Judgement
+                if (spellId)
+                    m_caster->CastSpell(unitTarget, spellId, true);
+
+                // Check for Judgement dependent auras
+                Unit::AuraApplicationMap & talentauras = m_caster->GetAppliedAuras();
+                for (Unit::AuraApplicationMap::iterator iter = talentauras.begin(); iter != talentauras.end();)
+                {
+                    Aura * aura = iter->second->GetBase();
+                    switch (aura->GetId())
+                    {
+                        case 31876:
+                        {
+                            m_caster->CastSpell((Unit*)NULL,57669,true);
+                            break;
+                        }
+                    }
+                    ++iter;
+                }
                 return;
             }
         }

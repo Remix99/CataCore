@@ -5,7 +5,8 @@
  *
  * Copyright (C) 2010-2011 Project SkyFire <http://www.projectskyfire.org/>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is
+ free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -695,8 +696,8 @@ SpellSpecific GetSpellSpecific(SpellEntry const * spellInfo)
             if (spellInfo->SpellFamilyFlags[0] & 0x00002190)
                 return SPELL_SPECIFIC_HAND;
 
-            // Judgement of Wisdom, Judgement of Light, Judgement of Justice
-            if (spellInfo->Id == 20184 || spellInfo->Id == 20185 || spellInfo->Id == 20186)
+            // Judgement, Judgement of Truth, Judgement of Righteoussness, Judgement of Light
+            if (spellInfo->Id == 20271 || spellInfo->Id == 31804 || spellInfo->Id == 20187 || spellInfo->Id == 54158)
                 return SPELL_SPECIFIC_JUDGEMENT;
 
             // only paladin auras have this (for palaldin class family)
@@ -3906,6 +3907,7 @@ void SpellMgr::LoadSpellCustomAttr()
         case 71904:                             // Chaos Bane
         case 70492: case 72505:                 // Ooze Eruption
         case 72624: case 72625:                 // Ooze Eruption
+        case 86704:                             // Ancient Fury
             // ONLY SPELLS WITH SPELLFAMILY_GENERIC and EFFECT_SCHOOL_DAMAGE
             mSpellCustomAttr[i] |= SPELL_ATTR0_CU_SHARE_DAMAGE;
             count++;
@@ -4222,6 +4224,10 @@ void SpellMgr::LoadSpellCustomAttr()
             break;
         case 63675: // Improved Devouring Plague
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
+            count++;
+            break;
+        case 86674: // Ancient Healer
+            spellInfo->procCharges = 5;
             count++;
             break;
         case 81782: // Power Word : Barrier 

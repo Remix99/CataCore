@@ -6645,24 +6645,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 }
                 return false;
             }
-            // Judgements of the Wise
-            if (dummySpell->SpellIconID == 3017)
-            {
-                target = this;
-                triggered_spell_id = 31930;
-                // replenishment
-                CastSpell(this,57669,true, castItem, triggeredByAura);
-                break;
-            }
-            // Sanctified Wrath
-            if (dummySpell->SpellIconID == 3029)
-            {
-                triggered_spell_id = 57318;
-                target = this;
-                basepoints0 = triggerAmount;
-                CastCustomSpell(target,triggered_spell_id,&basepoints0,&basepoints0,NULL,true,castItem,triggeredByAura);
-                return true;
-            }
             // Righteous Vengeance
             if (dummySpell->SpellIconID == 3025)
             {
@@ -6683,16 +6665,63 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
             }
             switch (dummySpell->Id)
             {
-                // Heart of the Crusader
-                case 20335: // rank 1
-                    triggered_spell_id = 21183;
+				// Judgements of the Bold
+                case 89901:
+                {
+                    target = this;
+                    triggered_spell_id = 89906;
                     break;
-                case 20336: // rank 2
-                    triggered_spell_id = 54498;
+                }
+                // Ancient Healer
+                case 86674:
+                {
+                    int32 bp0 = damage;
+                    int32 bp1 = ((bp0 * 10) / 100);
+
+                    if (!bp0 || !bp1)
+                        return false;
+
+                    if (pVictim && pVictim->IsFriendlyTo(this))  
+                        CastCustomSpell(pVictim,86678,&bp0,&bp1,0,true,NULL,triggeredByAura,0);
+                    else
+                        CastCustomSpell(this,86678,&bp0,&bp1,0,true,NULL,triggeredByAura,0);
+                    return true;
+                }
+                // Ancient Crusader - Player
+                case 86701:
+                {
+                    target = this;
+                    triggered_spell_id = 86700;
                     break;
-                case 20337: // rank 3
-                    triggered_spell_id = 54499;
-                    break;
+                }
+                // Uncomment this once the guardian is receiving the aura via 
+                // creature template addon and redirect aura procs to the owner
+                // Ancient Crusader - Guardian
+                /*
+                case 86703:
+                {
+                    Unit* owner = this->GetOwner();
+     
+                    if (!owner)
+                        return false;
+     
+                    owner->CastSpell(owner, 86700, true);
+                    return true;
+                }*/
+				// Long Arm of The law
+                case 87168:
+                case 87172:
+                {
+                    float chance = dummySpell->EffectBasePoints[0];
+
+                    if (roll_chance_f(chance) && !this->IsWithinDistInMap(pVictim, 15.0f))
+                    {
+                        target = this;
+                        triggered_spell_id = 87173;
+                        break;
+                    }
+                }
+
                 // Judgement of Light
                 case 20185:
                 {
