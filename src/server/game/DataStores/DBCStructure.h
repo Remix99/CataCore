@@ -1202,8 +1202,7 @@ struct ItemRandomSuffixEntry
     uint32    prefix[5];                                    // 8-12     m_allocationPct};
 };
 
-+struct ItemReforgeEntry
-
+struct ItemReforgeEntry
 {
     uint32    ID;                                           // 0
     uint32    oldstat;                                      // 1
