@@ -25389,6 +25389,9 @@ void Player::SendToManyPets(Player *pl)
 
 void Player::RemoveOrAddMasterySpells()
 {
+    if (!isAlive())
+        return;
+
     if (!HasAuraType(SPELL_AURA_MASTERY) || GetTalentBranchSpec(GetActiveSpec()) == 0)
     {
         if (HasAura(77514))
