@@ -1,6 +1,8 @@
+// Original Author: Kjanko and Trinity Forum for Ideas: 
+// Updated and expanded by Pryd, tested and works great. 
+
 #include "ScriptPCH.h"
 
-//Originally Written By ?? - Rewritten By Pryd
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////      CONFIG      /////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -12,21 +14,24 @@ bool LooseTokenOnPvPDeath = false; //Set to true if you want the victim to loose
 int32 AmountOfItemsYouWantTheVictimToLoose = 0; //Amount of items you want the victim to loose when victim dies.
 bool AddTokenOnPvPKill = true; //Set to false if you don't want the killer to be rewarded.
 int32 ItemReward = 37829; //The ItemID of the reward.
-int32 AmountOfRewardsOnKillStreak[12] = { 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5 }; //With how many items you want to reward the killer when he slays the victim.
+int32 AmountOfRewardsOnKillStreak[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 }; //With how many items you want to reward the killer when he slays the victim.
 int32 HowManyTimesYouWantTheKillerToGetAwardedForKillingTheSameVictim = 25; //Name speaks for It self.
-const int32 KillerStreak15 = 2; 
-const int32 KillerStreak20 = 3; 
-const int32 KillerStreak30 = 5; 
-const int32 KillerStreak40 = 7; 
-const int32 KillerStreak50 = 10;
-const int32 KillerStreak60 = 15;
-const int32 KillerStreak70 = 20;
-const int32 KillerStreak80 = 25;
-const int32 KillerStreak90 = 30;
-const int32 KillerStreak100 = 35;
-const int32 KillerStreak110 = 40;
-const int32 KillerStreak120 = 50; 
-int32 KillStreaks[12] = { KillerStreak15, KillerStreak20, KillerStreak30, KillerStreak40, KillerStreak50, KillerStreak60, KillerStreak70, KillerStreak80, KillerStreak90, KillerStreak100, KillerStreak110, KillerStreak120 };
+const int32 KillerStreak15 = 5; 
+const int32 KillerStreak20 = 10; 
+const int32 KillerStreak30 = 15; 
+const int32 KillerStreak40 = 20; 
+const int32 KillerStreak50 = 25;
+const int32 KillerStreak60 = 30;
+const int32 KillerStreak70 = 35;
+const int32 KillerStreak80 = 40;
+const int32 KillerStreak90 = 45;
+const int32 KillerStreak100 = 50;
+const int32 KillerStreak110 = 60;
+const int32 KillerStreak120 = 70;
+const int32 KillerStreak130 = 80;
+const int32 KillerStreak140 = 90; 
+const int32 KillerStreak150 = 100; 
+uint32 KillStreaks[16] = { KillerStreak15, KillerStreak20, KillerStreak30, KillerStreak40, KillerStreak50, KillerStreak60, KillerStreak70, KillerStreak80, KillerStreak90, KillerStreak100, KillerStreak110, KillerStreak120, KillerStreak130, KillerStreak140, KillerStreak150  };
 ///////////////////////////////////////////////////////////////////
 ///////////////////////      END      ////////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -41,10 +46,10 @@ struct SystemInfo
 
 static std::map<uint32, SystemInfo> KillingStreak;
 
-class pvp_System : public PlayerScript
+class System_OnPVPKill : public PlayerScript
 {
         public:
-                pvp_System() : PlayerScript("pvp_System") {}
+                System_OnPVPKill() : PlayerScript("System_OnPVPKill") {}
 
         
 void OnPVPKill(Player *pKiller, Player *pVictim)
@@ -102,131 +107,111 @@ void OnPVPKill(Player *pKiller, Player *pVictim)
         switch(KillingStreak[kGUID].KillStreak)
         {
 	        
-	     case 22:
-                                                        int RandomSpell;
-                                                        switch(urand(1, 14))
-                                                        {
-                                                        case 1:
-                                                                RandomSpell = 42828;
-                                                                break;
-                                                        case 2:
-                                                                RandomSpell = 11009;
-                                                                break;
-                                                        case 3:
-                                                                RandomSpell = 72726;
-                                                                break;
-                                                        case 4:
-                                                                RandomSpell = 19883;
-                                                                break;
-                                                        case 5:
-                                                                RandomSpell = 41969;
-                                                                break;
-                                                        case 6:
-                                                                RandomSpell = 43776;
-                                                                break;
-                                                        case 7:
-                                                                RandomSpell = 63660;
-                                                                break;
-                                                        case 8:
-                                                                RandomSpell = 51929;
-                                                                break;
-                                                        case 9:
-                                                                RandomSpell = 62398;
-                                                                break;
-                                                        case 10:
-                                                                RandomSpell = 60342;
-                                                                break;
-                                                        case 11:
-                                                                RandomSpell = 47335;
-                                                                break;
-                                                        case 12:
-                                                                RandomSpell = 69861;
-                                                                break;
-                                                        case 13:
-                                                                RandomSpell = 70571;
-                                                                break;
-                                                        case 14:
-                                                                RandomSpell = 11010;
-                                                                break;
-
-                                                        }
-                                                        pKiller->CastSpell(pKiller,RandomSpell,true);
-                                                        break;   
+	        
 	        
         case KillerStreak15:
-        sprintf(msg, "[PvP System]: -RANK-(1) - Beware of %s the Criminal who destroyed %s and is warming up with a 2 person killing spree. Rising to the top!", pKiller->GetName(), pVictim->GetName(), KillStreaks[1]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        sprintf(msg, "[Kill Streak]: -RANK-(1) - Beware of %s the Criminal who destroyed %s and is warming up with a 2 person killing spree. Rising to the top!", pKiller->GetName(), pVictim->GetName(), KillStreaks[1]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
         pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        pKiller->CastSpell(pKiller,11010,true);
         break;
 
         case KillerStreak20:
-        sprintf(msg, "[PvP System]: -RANK-(2) - Avoid %s the Insane who dismembered %s and is on fire with a 3 person killing spree. Inspired by death..", pKiller->GetName(), pVictim->GetName(), KillStreaks[2]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        sprintf(msg, "[Kill Streak]: -RANK-(2) - Avoid %s the Insane who dismembered %s and is on fire with a 3 person killing spree. Inspired by death..", pKiller->GetName(), pVictim->GetName(), KillStreaks[2]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
         pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+       // pKiller->CastSpell(pKiller,70571,true);
         break;
 
         case KillerStreak30:
-        sprintf(msg, "[PvP System]: -RANK-(3) - Watch out! %s the Maniac has slain %s and is on a crazed 5 person killing spree. Full of comtempt!", pKiller->GetName(), pVictim->GetName(), KillStreaks[3]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        sprintf(msg, "[Kill Streak]: -RANK-(3) - Watch out! %s the Maniac has slain %s and is on a crazed 4 person killing spree. Full of comtempt!", pKiller->GetName(), pVictim->GetName(), KillStreaks[3]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
         pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,69861,true);
         break;
         
         case KillerStreak40:
-        sprintf(msg, "[PvP System]: -RANK-(4) - Caution! %s the Serial Killer has massacred %s and is on a 7 person killing spree. Focused on the path.", pKiller->GetName(), pVictim->GetName(), KillStreaks[4]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[2]);
+        sprintf(msg, "[Kill Streak]: -RANK-(4) - Caution! %s the Serial Killer has massacred %s and is on a 5 person killing spree. Focused on the path.", pKiller->GetName(), pVictim->GetName(), KillStreaks[4]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,47335,true);
         break;
 
         case KillerStreak50:
-        sprintf(msg, "[PvP System]: -RANK-(5) - Fate steps aside as %s the Unmerciful has relinquished %s to the heavens and is on a 10 person killing spree. Demonic intentions", pKiller->GetName(), pVictim->GetName(), KillStreaks[5]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[2]);
-        
+        sprintf(msg, "[Kill Streak]: -RANK-(5) - Fate steps aside as %s the Unmerciful has relinquished %s to the heavens and is on a 6 person killing spree. Demonic intentions", pKiller->GetName(), pVictim->GetName(), KillStreaks[5]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        pKiller->CastSpell(pKiller,60342,true);
         break;
         
         case KillerStreak60:
-        sprintf(msg, "[PvP System]: -RANK-(6) - Attention! %s the Ender has absolved %s and is on a 15 person killing spree. Halfway to the highest of Ken", pKiller->GetName(), pVictim->GetName(), KillStreaks[6]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[2]);
-        
+        sprintf(msg, "[Kill Streak]: -RANK-(6) - Attention! %s the Ender has absolved %s and is on a 7 person killing spree. Halfway to the highest of Ken", pKiller->GetName(), pVictim->GetName(), KillStreaks[6]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,62398,true);
         break;
         
         case KillerStreak70:
-        sprintf(msg, "[PvP System]: -RANK-(7) - Be wary! %s the Gravedigger has buried %s and is raging with a 20 person killing spree. Working the late night shift!", pKiller->GetName(), pVictim->GetName(), KillStreaks[7]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[3]);
+        sprintf(msg, "[Kill Streak]: -RANK-(7) - Be wary! %s the Gravedigger has buried %s and is raging with a 8 person killing spree. Working the late night shift!", pKiller->GetName(), pVictim->GetName(), KillStreaks[7]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,51929,true);
         break;
 
         case KillerStreak80:
-        sprintf(msg, "[PvP System]: -RANK-(8) - Like clockwork, %s the Mastermind has tactfully removed %s from battle and is on fire with a 25 person killing spree. Motivated by the one.", pKiller->GetName(), pVictim->GetName(), KillStreaks[8]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[3]);
+        sprintf(msg, "[Kill Streak]: -RANK-(8) - Like clockwork, %s the Mastermind has tactfully removed %s from battle and is on fire with a 9 person killing spree. Motivated by the one.", pKiller->GetName(), pVictim->GetName(), KillStreaks[8]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,63660,true);
         break;
 
         case KillerStreak90:
-        sprintf(msg, "[PvP System]: -RANK-(9) - Concealed in the Shadows, %s the Assassinhas slain %s and is on a 30 person killing spree. Seeking revenge for the past.", pKiller->GetName(), pVictim->GetName(), KillStreaks[9]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[3]);
+        sprintf(msg, "[Kill Streak]: -RANK-(9) - Concealed in the Shadows, %s the Assassin has slain %s and is on a 10 person killing spree. Seeking revenge for the past.", pKiller->GetName(), pVictim->GetName(), KillStreaks[9]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        pKiller->CastSpell(pKiller,43776,true);
         break;
 
         case KillerStreak100:
-        sprintf(msg, "[PvP System]: -RANK-(10) - Tossing the carcass aside, %s the Bloodletter has devoured %s and is on a 35 person killing spree. Hell walks among the living.", pKiller->GetName(), pVictim->GetName(), KillStreaks[10]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[4]);
+        sprintf(msg, "[Kill Streak]: -RANK-(10) - Tossing the carcass aside, %s the Bloodletter has devoured %s and is on a 11 person killing spree. Hell walks among the living.", pKiller->GetName(), pVictim->GetName(), KillStreaks[10]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        pKiller->CastSpell(pKiller,41969,true);
         break;
 
         case KillerStreak110:
-        sprintf(msg, "[PvP System]: -RANK-(11) - Cower before %s the Unstoppable who has slain %s and is on a rampaging 40 person killing spree. Second in command to only one!", pKiller->GetName(), pVictim->GetName(), KillStreaks[11]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[4]);
-        
+        sprintf(msg, "[Kill Streak]: -RANK-(11) - Cower before %s the Unstoppable who has slain %s and is on a rampaging 12 person killing spree. Second in command to only one!", pKiller->GetName(), pVictim->GetName(), KillStreaks[11]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,19883,true); 
         break;
         
         case KillerStreak120:
-        sprintf(msg, "[PvP System]: -RANK-(12) - Fear %s the Conqueror; who has annihilated yet another victim, %s, and is on a 50 person killing spree. UnMatched by all, can no one stop them?", pKiller->GetName(), pVictim->GetName(), KillStreaks[12]);
-        sWorld.SendWorldText(LANG_SYSTEMMESSAGE, msg);
-        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[5]);
+        sprintf(msg, "[Kill Streak]: -RANK-(12) - Fear %s the Conqueror; who has annihilated yet another victim, %s, and is on a 13 person killing spree. UnMatched by all, can no one stop them?", pKiller->GetName(), pVictim->GetName(), KillStreaks[12]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,72726,true);
+        break;
         
+        case KillerStreak130:
+        sprintf(msg, "[Kill Streak]: -RANK-(13) - Fear %s the Conqueror; who has annihilated yet another victim, %s, and is on a 14 person killing spree. UnMatched by all, can no one stop them?", pKiller->GetName(), pVictim->GetName(), KillStreaks[12]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[1]);
+        //pKiller->CastSpell(pKiller,11009,true);
+        break;
+        
+        case KillerStreak140:
+        sprintf(msg, "[Kill Streak]: -RANK-(14) - Fear %s the Conqueror; who has annihilated yet another victim, %s, and is on a 15 person killing spree. UnMatched by all, can no one stop them?", pKiller->GetName(), pVictim->GetName(), KillStreaks[12]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[2]);
+        //pKiller->CastSpell(pKiller,42828,true);
+        break;
+
+        case KillerStreak150:
+        sprintf(msg, "[Kill Streak]: -RANK-(15) - The Reaper %s ; Has claimed another soul for the harvest, %s, and is on a 20 person killing spree. Who will be their next victim?!", pKiller->GetName(), pVictim->GetName(), KillStreaks[12]);
+        sWorld->SendWorldText(LANG_SYSTEMMESSAGE, msg);
+        pKiller->AddItem(ItemReward, AmountOfRewardsOnKillStreak[2]);
+        pKiller->CastSpell(pKiller,42828,true);
         break;
         
         
@@ -234,14 +219,14 @@ void OnPVPKill(Player *pKiller, Player *pVictim)
                                                
                                                         
                                                        }
-    			} 
+    											} 
 
                 
         }
 };
 
-void AddSC_pvp_System()
+void AddSC_System_OnPVPKill()
 {
-    new pvp_System();
+    new System_OnPVPKill();
 }
 
