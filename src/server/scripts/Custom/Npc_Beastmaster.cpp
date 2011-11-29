@@ -55,7 +55,7 @@ void CreatePet(Player *player, Creature * m_creature, uint32 entry) {
         pet->SetUInt32Value(UNIT_FIELD_LEVEL, player->getLevel());
  
         
-        if(!pet->InitStatsForLevel(player->getLevel()))
+        // if(!pet->InitStatsForLevel(player->getLevel()))
         sLog.outError ("Pet Create fail: no init stats for entry %u", entry);
  
         pet->UpdateAllStats();
