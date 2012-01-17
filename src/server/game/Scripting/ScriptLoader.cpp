@@ -1244,7 +1244,6 @@ void AddBattlegroundScripts()
 /* This is where custom scripts' loading functions should be declared. */
 void AddSC_Gossip_CheckCombat();
 void AddSC_Npc_Beastmaster();
-void AddSC_System_OnPVPKill();
 #endif
 
 void AddCustomScripts()
@@ -1253,6 +1252,5 @@ void AddCustomScripts()
     /* This is where custom scripts should be added. */
     AddSC_Gossip_CheckCombat();
     AddSC_Npc_Beastmaster();
-    AddSC_System_OnPVPKill();
 #endif
 }
