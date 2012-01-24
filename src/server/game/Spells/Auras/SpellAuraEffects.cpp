@@ -6721,6 +6721,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const *aurApp, uint8 mode, bool
                 target->AddPetAura(petSpell);
             else
                 target->RemovePetAura(petSpell);
+
         }
     }
 }
@@ -6739,7 +6740,6 @@ void AuraEffect::HandleChannelDeathItem(AuraApplication const *aurApp, uint8 mod
 
         Player *plCaster = caster->ToPlayer();
         Unit *target = aurApp->GetTarget();
-
         if (target->getDeathState() != JUST_DIED)
             return;
 
