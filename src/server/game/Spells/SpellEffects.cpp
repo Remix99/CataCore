@@ -1920,6 +1920,8 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
             case 46584: // Raise Dead
                 if (m_caster->GetTypeId() != TYPEID_PLAYER)
                     return;
+				m_caster->ToPlayer()->RemoveSpellCooldown(52150, true);
+				m_caster->ToPlayer()->RemoveSpellCooldown(46585, true);
 
                 // Do we have talent Master of Ghouls?
                 if (m_caster->HasAura(52143))
