@@ -6233,24 +6233,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                             return false;
                         basepoints0 = int32(triggerAmount * damage / 100 / (GetSpellMaxDuration(blessHealing) / blessHealing->EffectAmplitude[0]));
                     }
-                    break;
-            }
-					//Mind Melt
-				case 87160:
-				case 81292:
-				{
-					if (procSpell->Id != 73510) return false;
-					break;
-				}
-					// Atonement
-				case 14523:
-				case 81749:
-				{
-					basepoints0 = int32(CalculatePctN(damage, triggerAmount));
-					triggered_spell_id = 81751;
-					target = this;
-					break;
-				}
+                    break;					
                 // Train of Thought
                 case 92295:
                 case 92297:
@@ -6262,9 +6245,9 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                             {
                                 uint32 newCooldownDelay = caster->GetSpellCooldownDelay(47540);
                                 if (newCooldownDelay <= 0.5)
-                                    newCooldownDelay = 0;
-                                else
-                                    newCooldownDelay -= 0.5;
+                        newCooldownDelay = 0;
+                      else
+                        newCooldownDelay -= 0.5;
 
                                 caster->AddSpellCooldown(47540, 0, uint32(time(NULL) + newCooldownDelay));
                                 WorldPacket data(SMSG_MODIFY_COOLDOWN, 4 + 8 + 4);
@@ -6297,9 +6280,9 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                         }
                     }
                     break;
-			}
-			break;
-		}
+            }
+            break;
+        }
         case SPELLFAMILY_DRUID:
         {
             switch(dummySpell->Id)
