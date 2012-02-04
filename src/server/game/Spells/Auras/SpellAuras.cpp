@@ -78,6 +78,9 @@ m_effectsToApply(effMask), m_removeMode(AURA_REMOVE_NONE), m_needClientUpdate(fa
             GetTarget()->SetVisibleAura(slot, this);
             SetNeedClientUpdate();
             sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Aura: %u Effect: %d put to unit visible auras slot: %u", GetBase()->GetId(), GetEffectMask(), slot);
+
+        if ((target->HasAura(89489) || target->HasAura(89488)) && GetBase()->GetId() == 89485) // strength of soul
+      caster->CastSpell(caster, 96266, true);
         }
         else
             sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Aura: %u Effect: %d could not find empty unit visible slot", GetBase()->GetId(), GetEffectMask());
