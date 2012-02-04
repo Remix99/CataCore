@@ -8342,7 +8342,22 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
                     // Soul Preserver
                     case 60510:
                     {
-                        trigger_spell_id = 60515;
+                        switch (getClass())
+                        {
+                            case CLASS_DRUID:
+                                trigger_spell_id = 60512;
+                                break;
+                            case CLASS_PALADIN:
+                                trigger_spell_id = 60513;
+                                break;
+                            case CLASS_PRIEST:
+                                trigger_spell_id = 60514;
+                                break;
+                            case CLASS_SHAMAN:
+                                trigger_spell_id = 60515;
+                                break;
+                        }
+
                         target = this;
                         break;
                     }
