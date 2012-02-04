@@ -520,8 +520,10 @@ void Spell::SpellDamageSchoolDmg(SpellEffIndex effIndex)
             case SPELLFAMILY_WARRIOR:
             {
                // Bloodthirst
-               if (m_spellInfo->SpellFamilyFlags[1] & 0x400)
-                   damage = uint32(damage * (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) / 100);
+            if (m_spellInfo->SpellFamilyFlags[1] & 0x400)
+                            {
+                              damage = uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.8);
+                            }
                // Victory Rush
                else if (m_spellInfo->SpellFamilyFlags[1] & 0x100)
                {
