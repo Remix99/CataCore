@@ -6725,6 +6725,15 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 89906;
                     break;
                 }
+                // Judgements of the Wise
+                case 31878:
+                {
+                    target = this;
+                    triggered_spell_id = 31930;
+                    basepoints0 = int32(target->GetCreateMana() * 0.030);
+       target->CastCustomSpell(target, 31930, &basepoints0, 0, 0, true, 0, triggeredByAura);
+                    break;
+                }
                 // Ancient Healer
                 case 86674:
                 {
