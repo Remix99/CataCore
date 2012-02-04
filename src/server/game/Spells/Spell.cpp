@@ -6775,7 +6775,7 @@ void Spell::DelayedChannel()
 
     delaytime = delaytime * (100 - delayReduce) / 100;
 
-    if (m_timer <= delaytime
+    if (m_timer <= delaytime)
     {
         delaytime = m_timer;
         m_timer = 0;
