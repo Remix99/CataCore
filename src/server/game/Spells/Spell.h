@@ -727,7 +727,7 @@ class Spell
         ChanceTriggerSpells m_ChanceTriggerSpells;
 
         uint32 m_spellState;
-        uint32 m_timer;
+        int32 m_timer;
 
         bool m_IsTriggeredSpell;
 

@@ -4065,7 +4065,7 @@ void Spell::SendSpellStart()
     data << uint8(m_cast_count);                            // pending spell cast?
     data << uint32(m_spellInfo->Id);                        // spellId
     data << uint32(castFlags);                              // cast flags
-    data << uint32(m_timer);                                // delay?
+    data << int32(m_timer);                                // delay?
 
     m_targets.write(data);
 
@@ -6740,7 +6740,7 @@ void Spell::Delayed() // only called in DealDamage()
 
     delaytime = delaytime * (100 - delayReduce) / 100;
 
-    if (int32(m_timer) + delaytime > m_casttime)
+    if (m_timer + delaytime > m_casttime)
     {
         delaytime = m_casttime - m_timer;
         m_timer = m_casttime;
@@ -6775,7 +6775,7 @@ void Spell::DelayedChannel()
 
     delaytime = delaytime * (100 - delayReduce) / 100;
 
-    if (int32(m_timer) <= delaytime)
+    if (m_timer <= delaytime
     {
         delaytime = m_timer;
         m_timer = 0;
