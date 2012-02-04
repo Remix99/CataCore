@@ -8275,7 +8275,19 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
                         case FORM_DIREBEAR: trigger_spell_id = 67354; break;
                         default:
                             return false;
+                }
+                break;
+            }
+                    // Shooting Stars
+                    case 93398: // Rank 1
+                    case 93399: // Rank 2
+                    {
+                        if (GetTypeId() == TYPEID_PLAYER)
+                            ToPlayer()->RemoveSpellCooldown(78674, true); // Remove cooldown of Starsurge
+                        break;
                     }
+                    default:
+                        break;
                 }
                 break;
             }
