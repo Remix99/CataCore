@@ -1918,15 +1918,30 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                        damage = int32(damage + (damage * count * 12.5 / 100));
                     break;
                 }
-            case 49560: // Death Grip
-                Position pos;
-                GetSummonPosition(effIndex, pos);
-                if (Unit *unit = unitTarget->GetVehicleBase()) // what is this for?
-                    unit->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), damage, true);
-                else if (!unitTarget->HasAuraType(SPELL_AURA_DEFLECT_SPELLS)) // Deterrence
-                    unitTarget->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), damage, true);
-                return;
+        // Death Grip 
+        case 49576:
+        { 
+          if (!unitTarget) 
+            return; 
+ 
+          m_caster->CastSpell(unitTarget, 49560, true); 
+            return; 
+        } 
+        case 49560: 
+        { 
+          if (!unitTarget) 
+            return;
+            
+          /*
+          if (!unitTarget->HasAuraType(SPELL_AURA_DEFLECT_SPELLS)) // Deterrence no work perfectly.
+            return;
+          */
+          
+          unitTarget->CastSpell(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), damage, true); 
+            return;
+        }
             case 46584: // Raise Dead
+        {
                 if (m_caster->GetTypeId() != TYPEID_PLAYER)
                     return;
 				m_caster->ToPlayer()->RemoveSpellCooldown(52150, true);
@@ -1959,6 +1974,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
 
                 spell_id = CalculateDamage(0, NULL);
                 break;
+        }
             }
             break;
     }
