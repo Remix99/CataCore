@@ -8250,34 +8250,37 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
             }
             case SPELLFAMILY_DRUID:
             {
-                // Druid Forms Trinket
-                if (auraSpellInfo->Id == 37336)
+                switch (auraSpellInfo->Id)
                 {
-                    switch (GetShapeshiftForm())
+                    // Druid Forms Trinket
+                    case 37336:
                     {
-                        case FORM_NONE:     trigger_spell_id = 37344; break;
-                        case FORM_CAT:      trigger_spell_id = 37341; break;
-                        case FORM_BEAR:
-                        case FORM_DIREBEAR: trigger_spell_id = 37340; break;
-                        case FORM_TREE:     trigger_spell_id = 37342; break;
-                        case FORM_MOONKIN:  trigger_spell_id = 37343; break;
-                        default:
-                            return false;
+                        switch (GetShapeshiftForm())
+                        {
+                            case FORM_NONE:     trigger_spell_id = 37344; break;
+                            case FORM_CAT:      trigger_spell_id = 37341; break;
+                            case FORM_BEAR:
+                            case FORM_DIREBEAR: trigger_spell_id = 37340; break;
+                            case FORM_TREE:     trigger_spell_id = 37342; break;
+                            case FORM_MOONKIN:  trigger_spell_id = 37343; break;
+                            default:
+                                return false;
+                        }
+                        break;
                     }
-                }
-                // Druid T9 Feral Relic (Lacerate, Swipe, Mangle, and Shred)
-                else if (auraSpellInfo->Id == 67353)
-                {
-                    switch (GetShapeshiftForm())
+                    // Druid T9 Feral Relic (Lacerate, Swipe, Mangle, and Shred)
+                    case 67353:
                     {
-                        case FORM_CAT:      trigger_spell_id = 67355; break;
-                        case FORM_BEAR:
-                        case FORM_DIREBEAR: trigger_spell_id = 67354; break;
-                        default:
-                            return false;
-                }
-                break;
-            }
+                        switch (GetShapeshiftForm())
+                        {
+                            case FORM_CAT:      trigger_spell_id = 67355; break;
+                            case FORM_BEAR:
+                            case FORM_DIREBEAR: trigger_spell_id = 67354; break;
+                            default:
+                                return false;
+                        }
+                        break;
+                    }
                     // Shooting Stars
                     case 93398: // Rank 1
                     case 93399: // Rank 2
