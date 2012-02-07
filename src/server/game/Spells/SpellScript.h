@@ -138,11 +138,31 @@ class SpellScript : public _SpellScript
     // DO NOT OVERRIDE THESE IN SCRIPTS
     public:
         #define SPELLSCRIPT_FUNCTION_TYPE_DEFINES(CLASSNAME) \
+            typedef SpellCastResult(CLASSNAME::*SpellCheckCastFnType)(); \
             typedef void(CLASSNAME::*SpellEffectFnType)(SpellEffIndex); \
             typedef void(CLASSNAME::*SpellHitFnType)(); \
+            typedef void(CLASSNAME::*SpellCastFnType)(); \
             typedef void(CLASSNAME::*SpellUnitTargetFnType)(std::list<Unit*>&); \
 
         SPELLSCRIPT_FUNCTION_TYPE_DEFINES(SpellScript)
+
+        class CastHandler
+        {
+            public:
+                CastHandler(SpellCastFnType _pCastHandlerScript);
+                void Call(SpellScript* spellScript);
+            private:
+                SpellCastFnType pCastHandlerScript;
+        };
+
+        class CheckCastHandler
+        {
+            public:
+                CheckCastHandler(SpellCheckCastFnType checkCastHandlerScript);
+                SpellCastResult Call(SpellScript* spellScript);
+            private:
+                SpellCheckCastFnType _checkCastHandlerScript;
+        };
 
         class EffectHandler : public  _SpellScript::EffectNameCheck, public _SpellScript::EffectHook
         {
@@ -177,6 +197,8 @@ class SpellScript : public _SpellScript
         };
 
         #define SPELLSCRIPT_FUNCTION_CAST_DEFINES(CLASSNAME) \
+        class CastHandlerFunction : public SpellScript::CastHandler { public: CastHandlerFunction(SpellCastFnType _pCastHandlerScript) : SpellScript::CastHandler((SpellScript::SpellCastFnType)_pCastHandlerScript) {} }; \
+        class CheckCastHandlerFunction : public SpellScript::CheckCastHandler { public: CheckCastHandlerFunction(SpellCheckCastFnType _checkCastHandlerScript) : SpellScript::CheckCastHandler((SpellScript::SpellCheckCastFnType)_checkCastHandlerScript) {} }; \
         class EffectHandlerFunction : public SpellScript::EffectHandler { public: EffectHandlerFunction(SpellEffectFnType _pEffectHandlerScript,uint8 _effIndex, uint16 _effName) : SpellScript::EffectHandler((SpellScript::SpellEffectFnType)_pEffectHandlerScript, _effIndex, _effName) {} }; \
         class HitHandlerFunction : public SpellScript::HitHandler { public: HitHandlerFunction(SpellHitFnType _pHitHandlerScript) : SpellScript::HitHandler((SpellScript::SpellHitFnType)_pHitHandlerScript) {} }; \
         class UnitTargetHandlerFunction : public SpellScript::UnitTargetHandler { public: UnitTargetHandlerFunction(SpellUnitTargetFnType _pUnitTargetHandlerScript, uint8 _effIndex, uint16 _targetType) : SpellScript::UnitTargetHandler((SpellScript::SpellUnitTargetFnType)_pUnitTargetHandlerScript, _effIndex, _targetType) {} }; \
@@ -202,6 +224,19 @@ class SpellScript : public _SpellScript
         // SpellScript interface
         // hooks to which you can attach your functions
         //
+		        // example: BeforeCast += SpellCastFn(class::function);
+        HookList<CastHandler> BeforeCast;
+        // example: OnCast += SpellCastFn(class::function);
+        HookList<CastHandler> OnCast;
+        // example: AfterCast += SpellCastFn(class::function);
+        HookList<CastHandler> AfterCast;
+        #define SpellCastFn(F) CastHandlerFunction(&F)
+
+        // example: OnCheckCast += SpellCheckCastFn();
+        // where function is SpellCastResult function()
+        HookList<CheckCastHandler> OnCheckCast;
+        #define SpellCheckCastFn(F) CheckCastHandlerFunction(&F)
+
         // example: OnEffect += SpellEffectFn(class::function, EffectIndexSpecifier, EffectNameSpecifier);
         // where function is void function(SpellEffIndex effIndex)
         HookList<EffectHandler> OnEffect;

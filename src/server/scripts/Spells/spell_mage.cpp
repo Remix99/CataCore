@@ -272,56 +272,56 @@ public:
     }
 };
 
-// Hot streak
-class  spell_mage_pyroblast : public SpellScriptLoader
-{
-public:
-	spell_mage_pyroblast() : SpellScriptLoader("spell_mage_pyroblast") { }
-
-	class spell_mage_pyroblast_SpellScript : public SpellScript
-	{
-		PrepareSpellScript(spell_mage_pyroblast_SpellScript);
-
-		enum Spells
-		{
-			//Pyroblast!
-			SPELL_PYROBLAST = 92315
-		};
-
-		bool Validate(SpellEntry const * /*spellEntry*/) {
-			return sSpellStore.LookupEntry(SPELL_PYROBLAST);
-		}
-
-		bool Load(){ 
-			// if we have a caster and it's a player
-			if (Unit * caster = GetCaster())
-				if (caster->GetTypeId() == TYPEID_PLAYER)
-					return true;
-			return false;
-		}
-
-		SpellCastResult CheckRequirement(){
-			Unit * caster = GetCaster();				
-			if (Unit * target = GetTargetUnit())
-				if (caster->HasAura(48108)){
-					caster->CastSpell(target,SPELL_PYROBLAST,true);
-					return SPELL_CAST_OK;
-				}
-
-				return SPELL_CAST_OK;
-		}
-
-		void Register()
-		{
-			OnCheckCast += SpellCheckCastFn(spell_mage_pyroblast_SpellScript::CheckRequirement);
-		}			
-	};
-
-	SpellScript *GetSpellScript() const
-	{
-		return new spell_mage_pyroblast_SpellScript();
-	}
-};
+// Hot Streak Fix
+////class  spell_mage_pyroblast : public SpellScriptLoader
+//{
+//public:
+//	spell_mage_pyroblast() : SpellScriptLoader("spell_mage_pyroblast") { }
+//
+//	class spell_mage_pyroblast_SpellScript : public SpellScript
+//	{
+//		PrepareSpellScript(spell_mage_pyroblast_SpellScript);
+//
+//		enum Spells
+//		{
+//			//Pyroblast!
+//			SPELL_PYROBLAST = 92315
+//		};
+//
+//		bool Validate(SpellEntry const * /*spellEntry*/) {
+//			return sSpellStore.LookupEntry(SPELL_PYROBLAST);
+//		}
+//
+//		bool Load(){ 
+//			// if we have a caster and it's a player
+//			if (Unit * caster = GetCaster())
+//				if (caster->GetTypeId() == TYPEID_PLAYER)
+//					return true;
+//			return false;
+//		}
+//
+//		SpellCastResult CheckRequirement(){
+//			Unit * caster = GetCaster();				
+//			if (Unit * target = GetTargetUnit())
+//				if (caster->HasAura(48108)){
+//					caster->CastSpell(target,SPELL_PYROBLAST,true);
+//					return SPELL_CAST_OK;
+//				}
+//
+//				return SPELL_CAST_OK;
+//		}
+//
+//		void Register()
+//		{
+//			OnCheckCast += SpellCheckCastFn(spell_mage_pyroblast_SpellScript::CheckRequirement);
+//		}			
+//	};
+//
+//	SpellScript *GetSpellScript() const
+//	{
+//		return new spell_mage_pyroblast_SpellScript();
+//	}
+//};
 
 void AddSC_mage_spell_scripts()
 {
@@ -330,5 +330,5 @@ void AddSC_mage_spell_scripts()
     new spell_mage_incanters_absorbtion_absorb();
     new spell_mage_incanters_absorbtion_manashield();
     new spell_mage_polymorph_cast_visual;
-	new spell_mage_pyroblast;
+//	    new spell_mage_pyroblast();
 }
