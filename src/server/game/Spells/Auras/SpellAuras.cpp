@@ -1038,15 +1038,19 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
             case SPELLFAMILY_WARLOCK:
                 switch(GetId())
                 {
-                    case 48020: // Demonic Circle
-                        if (target->GetTypeId() == TYPEID_PLAYER)      
-                            if (GameObject* obj = target->GetGameObject(48018))      
-                {      
-                  target->NearTeleportTo(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());    
-                  target->RemoveMovementImpairingAuras();      
-                }    
-                        break;
-
+                 case 48020: // Demonic Circle
+                 if (target->GetTypeId() == TYPEID_PLAYER)
+			if (GameObject *obj = target->GetGameObject(48018))
+			{
+					target->ToPlayer()->AddSpellCooldown(35517, 0, time(NULL) + 1);//add cooldown to custom trigger // If the spell is used Out of Range cool it down to prevent spam // this is optional
+				if (target->IsWithinDist(obj, GetSpellMaxRange(48020, true)))
+				{
+					target->ToPlayer()->AddSpellCooldown(35517, 0, time(NULL) + 30);//add cooldown on successful spell use
+					target->NearTeleportTo(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());
+					target->RemoveMovementImpairingAuras();
+				}
+				break;
+			}
                 }
                 break;
             case SPELLFAMILY_PRIEST:

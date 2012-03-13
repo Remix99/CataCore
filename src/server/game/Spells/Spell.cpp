@@ -3856,6 +3856,32 @@ void Spell::finish(bool ok)
                 ((Puppet*)charm)->UnSummon();
     }
 
+	//Demonic circle teleport hack
+					case 48018://Teach the tele spell on demonic circle use if they dont have it
+				{
+					if (!m_caster->HasSpell(35517))
+					{
+						m_caster->ToPlayer()->learnSpell(35517, true);//better tele spell
+						break;
+					}
+				}
+				case 35517:// Teleport - dummy spell. Demonic Circle hack
+				{
+					if (!m_caster->HasAura(48018))// tele spell
+					{
+						 m_caster->ToPlayer()->AddSpellCooldown(35517, 0, time(NULL) + 3);//cooldown the spell if used without demonic circle aura//prevent unwanted spamming
+					}
+					if (m_caster->HasAura(48018))// Demonic circle aura
+					{
+						m_caster->AddAura(48020, m_caster);//demonic circle: teleport has to be used as an aura to teleport the caster
+					}
+					if (m_caster->HasAura(74434))// has soul burn
+					{
+						m_caster->AddAura(79438, m_caster);
+					}
+					break;
+				}
+
     if (!ok)
         return;
 
